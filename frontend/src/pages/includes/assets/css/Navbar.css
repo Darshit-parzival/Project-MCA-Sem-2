@@ -1,0 +1,31 @@
+/* custom.css */
+@font-face {
+    font-family: 'Franklin Gothic';
+    src: url('../fonts/FRAHV.TTF') format('ttf'),
+}
+
+
+.navbar .navbar-nav .nav-link:hover {  /* Increased specificity */
+    color: #ca0000;
+}
+
+.navbar {
+    font-family: 'Franklin Gothic';
+    height: 31px !important;
+}
+.navbar-nav{
+    margin: 0 auto;
+}
+
+.dropdown-item{
+    color: white !important;
+}
+
+.dropdown-item:hover{
+    color: #ca0000 !important;
+    background-color: #212529!important;
+}
+
+/* navbar-collapse {
+    display: block !important;
+} */
