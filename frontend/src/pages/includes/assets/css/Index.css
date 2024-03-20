@@ -1,0 +1,23 @@
+.bg{
+    background-image: url('../img/brick-wall.jpg');
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    filter: contrast(150%) brightness(100%);
+}
+
+.c-img {
+    width: 500px;
+    height: 500px;
+    object-fit: cover;
+}
+
+@media (max-width: 991px) {
+    /* .carousel-item {
+        padding: 20px;
+    } */
+    .respp{
+        display: none;
+    }
+    
+}
