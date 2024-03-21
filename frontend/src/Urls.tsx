@@ -4,12 +4,18 @@ import Calender from './pages/public/Calender'
 import About from './pages/public/About'
 import Comedians from './pages/public/Comedians'
 import Location from './pages/public/Location'
+import JndMoreInfo from './pages/includes/components/JndMoreInfo'
+import RktMoreInfo from './pages/includes/components/RktMoreInfo'
+import { AdiMoreInfo } from './pages/includes/components/AdiMoreInfo'
 
 function Urls() {
 
   return (
     <>
     <Routes>
+      <Route path='/location/ahmedabad' element={<AdiMoreInfo />} />
+      <Route path='/location/rajkot' element={<RktMoreInfo />} />
+      <Route path='/location/junagadh' element={<JndMoreInfo />} />
       <Route path='/location' element={<Location />} />
       <Route path='/comedians' element={<Comedians />} />
       <Route path='/about' element={<About />} />
