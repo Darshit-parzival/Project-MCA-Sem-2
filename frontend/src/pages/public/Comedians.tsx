@@ -59,9 +59,6 @@ const Comedians = () => {
                           repellat distinctio ad vero accusamus blanditiis, sunt
                           minus cumque illo.
                         </p>
-                        <button type="submit" className="btn-card">
-                          Book SHow
-                        </button>
                       </div>
                     </div>
                   </div>
@@ -88,9 +85,6 @@ const Comedians = () => {
                           vel quia, dolorum architecto laboriosam dolor dicta
                           fuga.
                         </p>
-                        <button type="submit" className="btn-card">
-                          Book SHow
-                        </button>
                       </div>
                     </div>
                   </div>

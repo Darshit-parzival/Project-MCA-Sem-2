@@ -3,15 +3,17 @@ import Index from './pages/public/Index'
 import Calender from './pages/public/Calender'
 import About from './pages/public/About'
 import Comedians from './pages/public/Comedians'
+import Location from './pages/public/Location'
 
 function Urls() {
 
   return (
     <>
     <Routes>
-      <Route path='/calender' element={<Calender />} />
+      <Route path='/location' element={<Location />} />
       <Route path='/comedians' element={<Comedians />} />
       <Route path='/about' element={<About />} />
+      <Route path='/calender' element={<Calender />} />
       <Route path='/' element={<Index />} />
     </Routes>
     </>

@@ -6,7 +6,6 @@
     letter-spacing: 1px;
     border-radius: 2px;
     text-align: center;
-    margin-left: 25px;
     height: auto !important;
 }
 .btn-card:hover{
@@ -14,4 +13,10 @@
 }
 .card-body{
     padding: 0 !important;
+    margin-left: 10px;
+}
+.img-fluid{
+    height: 200px;
+    width: 100% !important;
+    object-fit: cover;
 }
