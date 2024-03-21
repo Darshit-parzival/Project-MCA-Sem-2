@@ -1,0 +1,17 @@
+.btn-card {
+    color: #fff;
+    background-color: #f54343;
+    font-weight: 700;
+    font-size: 14px;
+    letter-spacing: 1px;
+    border-radius: 2px;
+    text-align: center;
+    margin-left: 25px;
+    height: auto !important;
+}
+.btn-card:hover{
+    background-color: #212529;
+}
+.card-body{
+    padding: 0 !important;
+}

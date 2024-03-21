@@ -67,7 +67,7 @@ const Calender = () => {
           )}
         </div>
       </div>
-      <div className="d-flex justify-content-center ">
+      <div className="d-flex justify-content-center">
         <div
           className="card mb-3 bg-dark text-white"
           style={{ maxWidth: "540px" }}

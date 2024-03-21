@@ -10,7 +10,7 @@ const About = () => {
         className="text-center w-100 p-3"
         style={{ backgroundColor: "rgb(17,17,17)" }}
       >
-        <p className="h1">About</p>
+        <p className="h1">ABOUT</p>
       </div>
       <div className="container-fluid">
         <div className="row about-section">
