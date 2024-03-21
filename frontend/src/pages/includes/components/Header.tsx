@@ -16,14 +16,13 @@ const Header = () => {
             aria-expanded="false"
             aria-label="Toggle navigation"
           >
-            <Link to="#">
+            {/* <Link to="#">
               <img
                 src={logo}
-                style={{ width: "150px" }}
                 className="rounded mx-auto d-block"
                 alt="Thumbnail"
               />
-            </Link>
+            </Link> */}
             <span className="navbar-toggler-icon"></span>
           </button>
           <div className="collapse navbar-collapse" id="navbarSupportedContent">
@@ -40,7 +39,7 @@ const Header = () => {
               <li className="nav-item mx-3">
                 <Link
                   className="nav-link active text-uppercase font-weight-bold"
-                  to="#"
+                  to="/about"
                 >
                   ABOUT
                 </Link>
@@ -89,7 +88,7 @@ const Header = () => {
                   MORE
                 </Link>
                 <ul
-                  className="dropdown-menu bg-dark"
+                  className="dropdown-menu"
                   aria-labelledby="navbarDropdown"
                 >
                   <li>
@@ -116,7 +115,7 @@ const Header = () => {
           <Link to="/">
             <img
               src={logo}
-              style={{ width: "125px" }}
+              style={{ maxWidth: "125px", maxHeight: "125px" }}
               className="rounded mx-auto d-block"
               alt="Thumbnail"
             />

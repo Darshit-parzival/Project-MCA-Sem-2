@@ -10,6 +10,7 @@
 
 .navbar {
     font-family: 'Franklin Gothic';
+    background-color: rgb(17, 17, 17) !important;
     /* height: 31px !important; */
 }
 
@@ -28,14 +29,21 @@
     height: auto;
 }
 
+.dropdown-menu{
+    background-color: rgb(17, 17, 17)!important;
+}
 
 .dropdown-item {
     color: white !important;
-    background-color: #212529!important;
+    background-color: rgb(17, 17, 17)!important;
 }
 
 .dropdown-item:hover {
     color: #ca0000 !important;
+}
+
+.logoimg {
+    box-shadow: 0 0 10px yellow !important;
 }
 
 @media (max-width: 991px) {

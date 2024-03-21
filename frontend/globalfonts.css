@@ -1,0 +1,8 @@
+@font-face {
+    font-family: 'Franklin Gothic';
+    src: url('src/pages/includes/assets/fonts/FRAHV.TTF') format('ttf'),
+}
+
+body{
+    font-family: 'Franklin Gothic';
+}
