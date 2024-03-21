@@ -4,6 +4,7 @@ import Calendar from "react-calendar";
 import Img1 from "../includes/assets/img/Img1.jpg";
 import "react-calendar/dist/Calendar.css";
 import { useState } from "react";
+import Footer from "../includes/components/Footer";
 
 const Calender = () => {
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -117,6 +118,7 @@ const Calender = () => {
           </div>
         </div>
       </div>
+      <Footer />
     </div>
   );
 };

@@ -1,5 +1,6 @@
 import Header from "../includes/components/Header";
 import "../includes/assets/css/about.css";
+import Footer from "../includes/components/Footer";
 
 const About = () => {
   return (
@@ -77,6 +78,7 @@ const About = () => {
           </div>
         </div>
       </div>
+      <Footer />
     </div>
   );
 };

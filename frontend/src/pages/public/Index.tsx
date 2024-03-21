@@ -3,6 +3,7 @@ import Img1 from "../includes/assets/img/Img1.jpg";
 import "../includes/assets/css/Index.css";
 import Header from "../includes/components/Header";
 import { FaFacebook, FaYoutube, FaInstagram } from "react-icons/fa";
+import Footer from "../includes/components/Footer";
 
 const Index = () => {
   return (
@@ -132,6 +133,7 @@ const Index = () => {
         </div>
       </div>
     </div>
+    <Footer />
     </>
   );
 };

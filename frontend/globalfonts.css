@@ -2,7 +2,9 @@
     font-family: 'Franklin Gothic';
     src: url('src/pages/includes/assets/fonts/FRAHV.TTF') format('ttf'),
 }
-
+::-webkit-scrollbar {
+    display: none;
+}
 body{
     font-family: 'Franklin Gothic';
 }

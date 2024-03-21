@@ -1,0 +1,32 @@
+.foot{
+    background-color: rgb(17,17,17);
+}
+.foot-img{
+    width: 100px;
+    height: 100px;
+}
+.terms{
+    text-decoration: none;
+    color: #9fa2a3;
+}
+.navfoot{
+    text-decoration: none;
+    color: #9fa2a3 !important;
+    font-size: 14px;
+}
+.navfoot:hover{
+    text-decoration: none;
+    color: #9fa2a3;
+    font-size: 14px;
+}
+.vertical-line {
+    background-color: #9fa2a3; /* Set the desired color */
+    height: 100%; /* Set a default height */
+    width: 1px; /* Stretch horizontally */
+    margin: 0 auto; /* Optional: Add margin for spacing */
+}
+.footloc{
+    text-decoration: none;
+    color: #9fa2a3;
+    font-size: 16px;
+}
