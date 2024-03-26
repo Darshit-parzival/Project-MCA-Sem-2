@@ -20,10 +20,10 @@
     font-size: 14px;
 }
 .vertical-line {
-    background-color: #9fa2a3; /* Set the desired color */
-    height: 100%; /* Set a default height */
-    width: 1px; /* Stretch horizontally */
-    margin: 0 auto; /* Optional: Add margin for spacing */
+    background-color: #9fa2a3;
+    height: 100%; 
+    width: 1px; 
+    margin: 0 auto; 
 }
 .footloc{
     text-decoration: none;

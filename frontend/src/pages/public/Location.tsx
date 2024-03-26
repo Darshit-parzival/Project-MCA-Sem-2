@@ -17,7 +17,7 @@ const Location = () => {
         <div className="row about-section">
           <div className="col">
             <div
-              className=" description-box p-4 mt-5 mb-5"
+              className="description-box p-4 mt-5 mb-5"
               style={{ backgroundColor: "rgb(17,17,17)", marginTop: "10px" }}
             >
               <div className="container d-flex justify-content-center">

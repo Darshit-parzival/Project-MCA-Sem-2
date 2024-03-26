@@ -7,6 +7,7 @@ import Location from './pages/public/Location'
 import JndMoreInfo from './pages/includes/components/JndMoreInfo'
 import RktMoreInfo from './pages/includes/components/RktMoreInfo'
 import { AdiMoreInfo } from './pages/includes/components/AdiMoreInfo'
+import Contact from './pages/public/Contact'
 
 function Urls() {
 
@@ -16,6 +17,7 @@ function Urls() {
       <Route path='/location/ahmedabad' element={<AdiMoreInfo />} />
       <Route path='/location/rajkot' element={<RktMoreInfo />} />
       <Route path='/location/junagadh' element={<JndMoreInfo />} />
+      <Route path='/contact' element={<Contact />} />
       <Route path='/location' element={<Location />} />
       <Route path='/comedians' element={<Comedians />} />
       <Route path='/about' element={<About />} />

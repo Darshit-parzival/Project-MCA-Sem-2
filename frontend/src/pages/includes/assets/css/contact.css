@@ -1,0 +1,5 @@
+.brick {
+    background: url("../img/brick-wall.jpg");
+    object-fit: cover;
+    filter: grayscale(100%);
+}

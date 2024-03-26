@@ -7,7 +7,7 @@
 }
 
 .c-img {
-    width: 500px;
+    width: 340px !important;
     height: 348px;
     object-fit: cover;
 }

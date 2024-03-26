@@ -28,7 +28,7 @@ const Index = () => {
                         <div className="col-md-4">
                           <img
                             src={Img1}
-                            className="c-img img-fluid rounded-start"
+                            className="c-img rounded-start"
                           />
                         </div>
                         <div className="col-md-8">

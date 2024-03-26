@@ -72,7 +72,7 @@ const Calender = () => {
           className="card mb-3 bg-dark text-white"
           style={{ maxWidth: "540px" }}
         >
-          <div className="row g-0">
+          <div className="row g-0" style={{ marginLeft: "-10px" }}>
             <div className="col-md-4">
               <img src={Img1} className="img-fluid rounded-start" />
             </div>

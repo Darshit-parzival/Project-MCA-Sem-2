@@ -63,7 +63,7 @@ const Header = () => {
               <li className="nav-item mx-3">
                 <Link
                   className="nav-link active text-uppercase font-weight-bold"
-                  to="#"
+                  to="/contact"
                 >
                   CONTACT
                 </Link>
