@@ -30,15 +30,42 @@ const Contact = () => {
           </div>
           <div className="row">
             <div className="col p-5">
-              <div className="text-left">
-                <p className="h1">Contact Info</p>
-                <p>
-                  <FaPhone className="me-2" /> +91 84601 69509
-                </p>
-                <p>
-                  <FaEnvelope className="me-2" /> merakicomedyclub@gmail.com
-                </p>
-              </div>
+              <form>
+                <div className="mb-3">
+                  <label htmlFor="exampleInputEmail1" className="form-label">
+                    Email address
+                  </label>
+                  <input
+                    type="email"
+                    className="form-control"
+                    id="exampleInputEmail1"
+                    aria-describedby="emailHelp"
+                  />
+                </div>
+                <div className="mb-3">
+                  <label htmlFor="exampleInputPassword1" className="form-label">
+                    Password
+                  </label>
+                  <input
+                    type="password"
+                    className="form-control"
+                    id="exampleInputPassword1"
+                  />
+                </div>
+                <div className="mb-3 form-check">
+                  <input
+                    type="checkbox"
+                    className="form-check-input"
+                    id="exampleCheck1"
+                  />
+                  <label className="form-check-label" htmlFor="exampleCheck1">
+                    Check me out
+                  </label>
+                </div>
+                <button type="submit" className="btn btn-primary">
+                  Submit
+                </button>
+              </form>
             </div>
           </div>
         </div>
