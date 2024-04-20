@@ -71,7 +71,7 @@ const Header = () => {
               <li className="nav-item mx-3">
                 <Link
                   className="nav-link active text-uppercase font-weight-bold"
-                  to="#"
+                  to="faq"
                 >
                   FAQ
                 </Link>
@@ -92,7 +92,7 @@ const Header = () => {
                   aria-labelledby="navbarDropdown"
                 >
                   <li>
-                    <Link className="dropdown-item" to="#">
+                    <Link className="dropdown-item" to="/login">
                       Login
                     </Link>
                   </li>
@@ -100,7 +100,7 @@ const Header = () => {
                     <hr className="dropdown-divider bg-light" />
                   </li>
                   <li>
-                    <Link className="dropdown-item" to="#">
+                    <Link className="dropdown-item" to="/signup">
                       Sign Up
                     </Link>
                   </li>

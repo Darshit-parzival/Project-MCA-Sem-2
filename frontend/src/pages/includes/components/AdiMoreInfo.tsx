@@ -1,7 +1,7 @@
 import Footer from "./Footer";
 import Header from "./Header";
 
-export const AdiMoreInfo = () => {
+const AdiMoreInfo = () => {
   return (
     <div>
       <Header />
@@ -10,3 +10,5 @@ export const AdiMoreInfo = () => {
     </div>
   );
 };
+
+export default AdiMoreInfo;

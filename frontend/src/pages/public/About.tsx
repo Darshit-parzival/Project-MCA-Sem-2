@@ -16,7 +16,7 @@ const About = () => {
         <div className="row about-section">
           <div className="col">
             <div
-              className="description-box p-4"
+              className="description-box mt-5 mb-5 p-4"
               style={{ backgroundColor: "rgb(17,17,17)", marginTop: "10px" }}
             >
               <h4>About Comedy Club</h4>

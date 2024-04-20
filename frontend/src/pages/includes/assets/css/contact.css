@@ -1,5 +1,27 @@
 .brick {
     background: url("../img/brick-wall.jpg");
     object-fit: cover;
-    filter: grayscale(100%);
+    /* filter: grayscale(100%); */
+}
+.txt-color{
+    color: #f54343 !important;
+    text-decoration: none;
+}
+.btn-card {
+    color: #fff;
+    background-color: #f54343;
+    font-weight: 700;
+    font-size: 16px;
+    border: none;
+    text-transform: uppercase;
+    letter-spacing: 1.3px;
+    border-radius: 0px;
+    text-align: center;
+    width: 159px;
+    height: 37px;
+    text-shadow: none;
+    padding: 8px 12px;
+}
+.btn-card:hover{
+    background-color: rgb(17, 17, 17);
 }
