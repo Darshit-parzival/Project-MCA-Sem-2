@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import Footer from "../includes/components/Footer";
 import Header from "../includes/components/Header";
+import Img from "../includes/assets/img/Register.jpg";
 
 const Signup = () => {
   return (
@@ -16,7 +17,13 @@ const Signup = () => {
         <div className="container h-100">
           <div className="row d-flex justify-content-center align-items-center h-100">
             <div className="col-lg-12 col-xl-11">
-              <div className="card text-black" style={{ borderRadius: "25px",backgroundColor: "rgb(17,17,17)" }}>
+              <div
+                className="card text-black"
+                style={{
+                  borderRadius: "25px",
+                  backgroundColor: "rgb(17,17,17)",
+                }}
+              >
                 <div className="card-body p-md-5">
                   <div className="row justify-content-center">
                     <div className="col-md-10 col-lg-6 col-xl-5 order-2 order-lg-1">
@@ -87,23 +94,27 @@ const Signup = () => {
                           </div>
                         </div>
 
-                        <div className="d-flex justify-content-center mx-4 mb-3 mb-lg-4">
+                        <div className="d-flex justify-content-left mx-4 mb-2">
                           <button
                             type="button"
                             data-mdb-button-init
                             data-mdb-ripple-init
                             className="btn btn-lg"
+                            style={{marginLeft:"-9px"}}
                           >
                             Register
                           </button>
                         </div>
+                        <Link to="/login" className="h6 ms-3 txt-color mb-4">
+                          Are you a member?
+                        </Link>
                       </form>
                     </div>
                     <div className="col-md-10 col-lg-6 col-xl-7 d-flex align-items-center order-1 order-lg-2">
                       <img
-                        src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-registration/draw1.webp"
+                        src={Img}
                         className="me-3 img-fluid"
-                        style={{height:"auto", width:"95%"}}
+                        style={{ height: "500px" }}
                         alt="Sample image"
                       />
                     </div>
