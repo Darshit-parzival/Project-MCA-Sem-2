@@ -11,12 +11,16 @@ import Contact from './pages/public/Contact'
 import Faq from './pages/public/Faq'
 import Login from './pages/public/Login'
 import Signup from './pages/public/Signup'
+import Home from './pages/admin/Home'
 
 function Urls() {
 
   return (
     <>
     <Routes>
+      <Route path='/admin' element={<Home />} />
+
+      {/* Public */}
       <Route path='/signup' element={<Signup />} />
       <Route path='/login' element={<Login />} />
       <Route path='/faq' element={<Faq />} />
