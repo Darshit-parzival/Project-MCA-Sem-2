@@ -2,8 +2,33 @@ import { Link } from "react-router-dom";
 import Footer from "../includes/components/Footer";
 import Header from "../includes/components/Header";
 import Img from "../includes/assets/img/Login.jpg";
+import axios from 'axios';
+import { useState } from 'react';
 
 const Login = () => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [sucmessage, setSucMessage] = useState('');
+  const [message, setMessage] = useState('');
+
+  const handleLogin = async (e: { preventDefault: () => void; }) => {
+      e.preventDefault(); // Prevent default form submission behavior
+      
+      try {
+          const response = await axios.post('http://localhost:8000/api/login', { email, password });
+          if (response.data.success) {
+              setSucMessage(response.data.message);
+              setMessage(''); // Reset any previous error message
+          } else {
+              setMessage(response.data.message);
+              setSucMessage(''); // Reset any previous success message
+          }
+      } catch (error) {
+          console.error('Login failed:', error);
+          setMessage('An error occurred while logging in.'); // Set generic error message
+          setSucMessage(''); // Reset any previous success message
+      }
+  };
   return (
     <div>
       <Header />
@@ -30,8 +55,14 @@ const Login = () => {
                       <p className="text-center h2 fw-bold mb-5 mx-1 mx-md-4 mt-4">
                         Step into the Comedy Club
                       </p>
+                      {sucmessage && <p className="text-center h3 fw-bold txt-color-success">
+                        {sucmessage}
+                      </p>}
+                      {message && <p className="text-center h3 fw-bold txt-color">
+                        {message}
+                      </p>}
 
-                      <form className="mx-1 mx-md-4">
+                      <form className="mx-1 mx-md-4" method="post" onSubmit={handleLogin}>
                         <div className="d-flex flex-row align-items-center mb-4">
                           <i className="fas fa-envelope fa-lg me-3 fa-fw"></i>
                           <div
@@ -40,10 +71,12 @@ const Login = () => {
                           >
                             <input
                               type="email"
+                              value={email}
+                              onChange={(e) => setEmail(e.target.value)}
                               id="form3Example3c"
                               className="form-control"
                             />
-                            <label className="form-label">Email or Username</label>
+                            <label className="form-label">Enter Email</label>
                           </div>
                         </div>
 
@@ -56,6 +89,8 @@ const Login = () => {
                             <input
                               type="password"
                               id="form3Example4c"
+                              value={password}
+                              onChange={(e) => setPassword(e.target.value)}
                               className="form-control"
                             />
                             <label className="form-label">Password</label>
@@ -64,7 +99,7 @@ const Login = () => {
 
                         <div className="d-flex justify-content-left mx-4 mb-2">
                           <button
-                            type="button"
+                            type="submit"
                             data-mdb-button-init
                             data-mdb-ripple-init
                             className="btn btn-lg"

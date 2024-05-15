@@ -7,6 +7,10 @@
     color: #f54343 !important;
     text-decoration: none;
 }
+.txt-color-success{
+    color: #00ff00 !important;
+    text-decoration: none;
+}
 .btn-card {
     color: #fff;
     background-color: #f54343;
