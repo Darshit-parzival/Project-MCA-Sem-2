@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.urls import path
-from .views import add_fan, login_fan, login_admin, admin_data, admin_add
+from .views import add_fan, login_fan, login_admin, admin_data, admin_add, count_data
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -9,4 +9,5 @@ urlpatterns = [
     path('manager/data/', admin_data, name='admin_data'),
     path('manager/add/', admin_add, name='admin_add'),
     path('manager/login/', login_admin, name='login_admin'),
+    path('count/', count_data, name='count_data'),
 ]

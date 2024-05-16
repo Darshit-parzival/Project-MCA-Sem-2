@@ -63,3 +63,13 @@ def admin_add(request):
             return JsonResponse({'success': False, 'message':'admin Not Added'})
     else:
         return JsonResponse({'success': False, 'error': 'Only POST requests are allowed'})
+    
+@csrf_exempt
+def count_data(request):
+    if request.method == 'POST':
+        ttl_admin = db['admin'].count_documents({})
+        ttl_fans = db['fans'].count_documents({}) 
+        
+        return JsonResponse({'success': True, 'message': 'Data Retrieved', 'data': {'total_admin': ttl_admin, 'total_fans': ttl_fans}})
+    else:
+        return JsonResponse({'success': False, 'error': 'Only POST requests are allowed'})

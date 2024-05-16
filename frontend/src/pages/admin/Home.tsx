@@ -1,15 +1,16 @@
 import logo from "../includes/assets/img/logo.png";
 import "../includes/assets/css/adminDashboard.css";
-import { FaCalendar, FaFile, FaHome } from "react-icons/fa";
+import { FaCalendar, FaHome } from "react-icons/fa";
 import { useState } from "react";
-import Dashboard from "./Dashboard";
 import { Link } from "react-router-dom";
 import Shows from "./Shows";
+import Admins from "./Admins";
+import Dashboard from "./Dashboard";
 
 const Home = () => {
-  const [showDashboard, setShowDashboard] = useState(false);
+  const [showDashboard, setShowDashboard] = useState(true);
   const [showShows, setShowShows] = useState(false);
-  const [addAdmin, setAddAdmin] = useState(false);
+  const [admins, setAdmins] = useState(false);
 
   const admin = sessionStorage.getItem("admin");
 
@@ -20,15 +21,23 @@ const Home = () => {
 
   const handleClick = () => {
     setShowDashboard(true);
+    document.getElementById("dashboard").classList.add("txt-color");
+    document.getElementById("shows").classList.remove("txt-color");
     setShowShows(false);
-    setAddAdmin(false)
+    setAdmins(false);
   };
   const handleShows = () => {
-    setShowDashboard(false);
     setShowShows(true);
-    setAddAdmin(false)
+    document.getElementById("shows").classList.add("txt-color");
+    document.getElementById("dashboard").classList.remove("txt-color");
+    setShowDashboard(false);
+    setAdmins(false);
   };
-  
+  const handleAdmins = () => {
+    setShowDashboard(false);
+    setShowShows(false);
+    setAdmins(true);
+  };
 
   return (
     <div>
@@ -64,6 +73,7 @@ const Home = () => {
                   <label
                     className="nav-link text-white"
                     aria-current="page"
+                    id="dashboard"
                     onClick={handleClick}
                   >
                     <FaHome className="me-1 mb-1" />
@@ -71,16 +81,15 @@ const Home = () => {
                   </label>
                 </li>
                 <li className="nav-item">
-                  <label className="nav-link text-white" onClick={handleShows}>
+                  <label className="nav-link text-white" id="shows" onClick={handleShows}>
                     <FaCalendar className="me-1 mb-1" />
                     Shows
                   </label>
                 </li>
                 <li className="nav-item">
-                  <a className="nav-link text-white" href="#">
-                    <span data-feather="shopping-cart"></span>
-                    Users
-                  </a>
+                  <label className="nav-link text-white" onClick={handleAdmins}>
+                    Admin
+                  </label>
                 </li>
                 <li className="nav-item">
                   <a className="nav-link text-white" href="#">
@@ -139,6 +148,7 @@ const Home = () => {
           </nav>
           <div className="col-md-9 ms-sm-auto col-lg-10 px-md-4">
             {showDashboard && <Dashboard />}
+            {admins && <Admins />}
             {showShows && <Shows />}
           </div>
         </div>

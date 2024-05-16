@@ -1,6 +1,6 @@
 import { Routes, Route } from "react-router-dom";
 import Index from "./pages/public/Index";
-import Admin from "./pages/admin/Index"
+import Admin from "./pages/admin/Index";
 import Calender from "./pages/public/Calender";
 import About from "./pages/public/About";
 import Comedians from "./pages/public/Comedians";
@@ -16,13 +16,12 @@ import Home from "./pages/admin/Home";
 import Logout from "./pages/includes/components/Logout";
 import Profile from "./pages/public/Profile";
 import Shows from "./pages/admin/Shows";
-import AddAdmin from "./pages/admin/AddAdmin";
 
 function Urls() {
   let name = "";
-  let admin= "";
+  let admin = "";
   const storedName = sessionStorage.getItem("name");
-  const storedAdmin = sessionStorage.getItem('admin')
+  const storedAdmin = sessionStorage.getItem("admin");
   storedName !== null ? (name = storedName) : false;
   storedAdmin !== null ? (admin = storedAdmin) : false;
 
@@ -37,7 +36,6 @@ function Urls() {
         {name || <Route path="/login" element={<Login />} />}
         {name && <Route path="/logout" element={<Logout />} />}
         {name && <Route path="/profile" element={<Profile />} />}
-
 
         <Route path="/faq" element={<Faq />} />
         <Route path="/location/ahmedabad" element={<AdiMoreInfo />} />
