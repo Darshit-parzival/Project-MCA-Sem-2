@@ -1,46 +1,24 @@
 import logo from "../includes/assets/img/logo.png";
 import "../includes/assets/css/adminDashboard.css";
-import { FaCalendar, FaFile, FaHome } from "react-icons/fa";
-import { useState } from "react";
-import Dashboard from "./Dashboard";
+import { FaCalendar, FaFile } from "react-icons/fa";
 import { Link } from "react-router-dom";
-import Shows from "./Shows";
 
-const Home = () => {
-  const [showDashboard, setShowDashboard] = useState(false);
-  const [showShows, setShowShows] = useState(false);
-  const [addAdmin, setAddAdmin] = useState(false);
+const AdminSidebar = () => {
 
-  const admin = sessionStorage.getItem("admin");
+const admin = sessionStorage.getItem("admin");
 
-  const logout = () => {
-    sessionStorage.removeItem("admin");
-    window.location.href = "/admin";
-  };
-
-  const handleClick = () => {
-    setShowDashboard(true);
-    setShowShows(false);
-    setAddAdmin(false)
-  };
-  const handleShows = () => {
-    setShowDashboard(false);
-    setShowShows(true);
-    setAddAdmin(false)
-  };
-  
+const logout=()=>{
+  sessionStorage.removeItem("admin")
+  window.location.href='/admin'
+}
 
   return (
     <div>
       <header className="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
-        <Link
-          className="navbar-brand col-md-3 col-lg-2 me-0 px-3"
-          onClick={handleClick}
-          to="/admin/home"
-        >
+        <a className="navbar-brand col-md-3 col-lg-2 me-0 px-3" href="#">
           <img src={logo} width="40" height="40" alt="logo" className="me-2" />
-          Comedy Club
-        </Link>
+          comedy club
+        </a>
         <span className=" w-100">Ahoy, {admin}!</span>
         <div className="navbar-nav">
           <div className="nav-item text-nowrap">
@@ -61,20 +39,20 @@ const Home = () => {
             <div className="position-sticky pt-3">
               <ul className="nav flex-column">
                 <li className="nav-item">
-                  <label
+                  <Link
                     className="nav-link text-white"
                     aria-current="page"
-                    onClick={handleClick}
+                    to='/admin/shows'
                   >
-                    <FaHome className="me-1 mb-1" />
-                    Dashboard
-                  </label>
+                    <FaCalendar className="me-1 mb-1" />
+                    Dashbo
+                  </Link>
                 </li>
                 <li className="nav-item">
-                  <label className="nav-link text-white" onClick={handleShows}>
-                    <FaCalendar className="me-1 mb-1" />
-                    Shows
-                  </label>
+                  <a className="nav-link text-white" href="#">
+                    <FaFile className="me-1 mb-1" />
+                    Events
+                  </a>
                 </li>
                 <li className="nav-item">
                   <a className="nav-link text-white" href="#">
@@ -137,14 +115,11 @@ const Home = () => {
               </ul>
             </div>
           </nav>
-          <div className="col-md-9 ms-sm-auto col-lg-10 px-md-4">
-            {showDashboard && <Dashboard />}
-            {showShows && <Shows />}
-          </div>
         </div>
       </div>
     </div>
+    
   );
 };
 
-export default Home;
+export default AdminSidebar;

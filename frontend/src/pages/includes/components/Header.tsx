@@ -1,8 +1,15 @@
 import { Link } from "react-router-dom";
 import logo from "../assets/img/logo.png";
 import "../assets/css/header.css";
+import Index from "../../public/Index";
 
 const Header = () => {
+let name = "More";
+
+const storedName = sessionStorage.getItem("name");
+
+(storedName !== null)?(name = storedName):false
+
   return (
     <div>
       <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -85,25 +92,38 @@ const Header = () => {
                   data-bs-toggle="dropdown"
                   aria-expanded="false"
                 >
-                  MORE
+                  {name}
                 </Link>
-                <ul
-                  className="dropdown-menu"
-                  aria-labelledby="navbarDropdown"
-                >
-                  <li>
-                    <Link className="dropdown-item" to="/login">
-                      Login
-                    </Link>
-                  </li>
+                <ul className="dropdown-menu" aria-labelledby="navbarDropdown">
+                  {(name === sessionStorage.getItem("name") ? name : false) && (
+                    <li>
+                      <Link className="dropdown-item" to="/profile">
+                        Profile
+                      </Link>
+                    </li>
+                  )}
+                  {!(name === sessionStorage.getItem("name")
+                    ? name
+                    : false) && (
+                    <li>
+                      <Link className="dropdown-item" to="/login">
+                        Login
+                      </Link>
+                    </li>
+                  )}
                   <li>
                     <hr className="dropdown-divider bg-light" />
+                    {(name===sessionStorage.getItem('name')?name:false) &&<li>
+                      <Link className="dropdown-item" to="/logout">
+                        Log Out
+                      </Link>
+                    </li>}
                   </li>
-                  <li>
+                  {!(name===sessionStorage.getItem('name')?name:false) && <li>
                     <Link className="dropdown-item" to="/signup">
                       Sign Up
                     </Link>
-                  </li>
+                  </li>}
                 </ul>
               </li>
             </ul>

@@ -2,36 +2,40 @@ import { Link } from "react-router-dom";
 import Footer from "../includes/components/Footer";
 import Header from "../includes/components/Header";
 import Img from "../includes/assets/img/Register.jpg";
-import { useState } from 'react';
-import axios from 'axios';
+import welcome from "../includes/assets/img/welcometoclub.gif"
+import { useState } from "react";
+import axios from "axios";
 
 const Signup = () => {
-  const [name, setName] = useState('');
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [cpassword, setCPassword] = useState('');
-    const [sucmessage, setSucMessage] = useState('');
-    const [message, setMessage] = useState('');
-    
-    const handleSubmit = async (e: { preventDefault: () => void; }) => {
-      e.preventDefault();
-      try {
-        if(password===cpassword){
-          console.log({name,email,password})
-          const response = await axios.post('http://127.0.0.1:8000/fans/add/', { name, email, password });
-          if (response.data.success) {
-              setSucMessage('Fan added successfully');
-          } else {
-              setMessage(response.data.message);
-              console.log(response.data);
-              
-          }
-        }else{
-          setMessage("Password not same");
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [cpassword, setCPassword] = useState("");
+  const [sucmessage, setSucMessage] = useState("");
+  const [message, setMessage] = useState("");
+
+  const handleSubmit = async (e: { preventDefault: () => void }) => {
+    e.preventDefault();
+    try {
+      if (password === cpassword) {
+        console.log({ name, email, password });
+        const response = await axios.post("http://127.0.0.1:8000/fans/add/", {
+          name,
+          email,
+          password,
+        });
+        if (response.data.success) {
+          setSucMessage(response.data.message);
+        } else {
+          setMessage(response.data.message);
+          console.log(response.data);
         }
-      } catch (error) {
-          setMessage('Error adding fan'); 
+      } else {
+        setMessage("Password not same");
       }
+    } catch (error) {
+      setMessage("Error adding fan");
+    }
   };
   return (
     <div>
@@ -59,14 +63,22 @@ const Signup = () => {
                       <p className="text-center h1 fw-bold mb-5 mx-1 mx-md-4 mt-4">
                         Enroll for Laughs
                       </p>
-                      {sucmessage && <p className="text-center h3 fw-bold txt-color-success">
-                        {sucmessage}
-                      </p>}
-                      {message && <p className="text-center h3 fw-bold txt-color">
-                        {message}
-                      </p>}
+                      {sucmessage && (
+                        <p className="text-center h3 fw-bold txt-color-success">
+                          {sucmessage}
+                        </p>
+                      )}
+                      {message && (
+                        <p className="text-center h3 fw-bold txt-color">
+                          {message}
+                        </p>
+                      )}
 
-                      <form className="mx-1 mx-md-4" method="post" onSubmit={handleSubmit}>
+                      <form
+                        className="mx-1 mx-md-4"
+                        method="post"
+                        onSubmit={handleSubmit}
+                      >
                         <div className="d-flex flex-row align-items-center mb-4">
                           <i className="fas fa-user fa-lg me-3 fa-fw"></i>
                           <div
@@ -77,9 +89,9 @@ const Signup = () => {
                               type="text"
                               id="form3Example1c"
                               value={name}
-                              onChange={(e)=>setName(e.target.value)}
+                              onChange={(e) => setName(e.target.value)}
                               className="form-control"
-                              />
+                            />
                             <label className="form-label">Your Name</label>
                           </div>
                         </div>
@@ -89,14 +101,14 @@ const Signup = () => {
                           <div
                             data-mdb-input-init
                             className="form-outline flex-fill mb-0"
-                            >
+                          >
                             <input
                               type="email"
                               id="form3Example3c"
                               value={email}
-                              onChange={(e)=>setEmail(e.target.value)}
+                              onChange={(e) => setEmail(e.target.value.toLowerCase())}
                               className="form-control"
-                              />
+                            />
                             <label className="form-label">Your Email</label>
                           </div>
                         </div>
@@ -106,14 +118,14 @@ const Signup = () => {
                           <div
                             data-mdb-input-init
                             className="form-outline flex-fill mb-0"
-                            >
+                          >
                             <input
                               type="password"
                               id="form3Example4c"
                               value={password}
-                              onChange={(e)=>setPassword(e.target.value)}
+                              onChange={(e) => setPassword(e.target.value)}
                               className="form-control"
-                              />
+                            />
                             <label className="form-label">Password</label>
                           </div>
                         </div>
@@ -123,14 +135,14 @@ const Signup = () => {
                           <div
                             data-mdb-input-init
                             className="form-outline flex-fill mb-0"
-                            >
+                          >
                             <input
                               type="password"
                               id="form3Example4cd"
                               value={cpassword}
-                              onChange={(e)=>setCPassword(e.target.value)}
+                              onChange={(e) => setCPassword(e.target.value)}
                               className="form-control"
-                              />
+                            />
                             <label className="form-label">
                               Repeat your password
                             </label>
@@ -143,8 +155,8 @@ const Signup = () => {
                             data-mdb-button-init
                             data-mdb-ripple-init
                             className="btn btn-lg"
-                            style={{marginLeft:"-9px"}}
-                            >
+                            style={{ marginLeft: "-9px" }}
+                          >
                             Register
                           </button>
                         </div>
@@ -154,12 +166,18 @@ const Signup = () => {
                       </form>
                     </div>
                     <div className="col-md-10 col-lg-6 col-xl-7 d-flex align-items-center order-1 order-lg-2">
-                      <img
+                      {!sucmessage && <img
                         src={Img}
                         className="me-3 img-fluid"
                         style={{ height: "500px" }}
                         alt="Sample image"
-                      />
+                      />}
+                      {sucmessage && <img
+                        src={welcome}
+                        className="me-3 img-fluid"
+                        style={{ height: "500px" }}
+                        alt="Sample image"
+                      />}
                     </div>
                   </div>
                 </div>

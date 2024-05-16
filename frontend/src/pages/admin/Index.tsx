@@ -1,12 +1,8 @@
-import { Link } from "react-router-dom";
-import Footer from "../includes/components/Footer";
-import Header from "../includes/components/Header";
-import Img from "../includes/assets/img/Login.jpg";
-import Noentry from "../includes/assets/img/no_entry.gif"
 import axios from "axios";
 import { useState } from "react";
+import { Link } from "react-router-dom";
 
-const Login = () => {
+const Index = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [err,setErr]=useState("")
@@ -14,33 +10,26 @@ const Login = () => {
   const handleLogin = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
     try {
-      const response = await axios.post("http://localhost:8000/fans/login/", {
+      const response = await axios.post("http://localhost:8000/manager/login/", {
         email,
         password,
       });
       if (response.data.success) {
         console.log(response.data);
-        sessionStorage.setItem("name",response.data.name)
-        window.location.href="/"
+        sessionStorage.setItem("admin",response.data.name)
+        window.location.href="/admin/home"
       }
       else{
         setErr(response.data.message)
       }
     } catch (error) {
-      console.error("Login failed:", error);
+      
     }
   };
   return (
     <div>
-      <Header />
-      <div
-        className="text-center w-100 p-3"
-        style={{ backgroundColor: "rgb(17,17,17)" }}
-      >
-        <p className="h1">Login</p>
-      </div>
       <section className="mb-2 mt-2">
-        <div className="container h-100">
+        <div className="container h-100 position-absolute top-50 start-50 translate-middle">
           <div className="row d-flex justify-content-center align-items-center h-100">
             <div className="col-lg-12 col-xl-11">
               <div
@@ -51,10 +40,10 @@ const Login = () => {
                 }}
               >
                 <div className="card-body p-md-5">
-                  <div className="row justify-content-center">
+                  <div className="row justify-content-center w-auto">
                     <div className="col-md-10 col-lg-6 col-xl-5 order-2 order-lg-1">
                       <p className="text-center h2 fw-bold mb-5 mx-1 mx-md-4 mt-4">
-                        Step into the Comedy Club
+                        Admin
                       </p>
                       {err && (
                         <p className="text-center h3 fw-bold txt-color">
@@ -62,7 +51,7 @@ const Login = () => {
                         </p>
                       )}
                       <form
-                        className="mx-1 mx-md-4"
+                        className="mx-1 mx-md-4 "
                         method="post"
                         onSubmit={handleLogin}
                       >
@@ -112,24 +101,11 @@ const Login = () => {
                           </button>
                         </div>
                         <Link to="/signup" className="h6 ms-3 txt-color mb-4">
-                          Create an account
+                          Short term Memory loss?(forgot password)
                         </Link>
                       </form>
                     </div>
-                    <div className="col-md-10 col-lg-6 col-xl-7 d-flex align-items-center order-1 order-lg-2">
-                      {err && <img
-                        src={Noentry}
-                        className="me-3 img-fluid"
-                        style={{ height: "500px" }}
-                        alt="Sample image"
-                      />}
-                      {!err && <img
-                        src={Img}
-                        className="me-3 img-fluid"
-                        style={{ height: "500px" }}
-                        alt="Sample image"
-                      />}
-                    </div>
+                    
                   </div>
                 </div>
               </div>
@@ -137,9 +113,8 @@ const Login = () => {
           </div>
         </div>
       </section>
-      <Footer />
     </div>
   );
 };
 
-export default Login;
+export default Index;
