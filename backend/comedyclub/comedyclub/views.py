@@ -52,3 +52,14 @@ def admin_data(request):
             return JsonResponse({'success': False, 'message': 'Details are wrong!'})
     else:
         return JsonResponse({'success': False, 'error': 'Only POST requests are allowed'})
+    
+@csrf_exempt
+def admin_add(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        if db['admin'].insert_one(data):
+            return JsonResponse({'success': True, 'message':'admin added successfully'})
+        else:
+            return JsonResponse({'success': False, 'message':'admin Not Added'})
+    else:
+        return JsonResponse({'success': False, 'error': 'Only POST requests are allowed'})

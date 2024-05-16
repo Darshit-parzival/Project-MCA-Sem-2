@@ -56,7 +56,6 @@ const Index = () => {
                         onSubmit={handleLogin}
                       >
                         <div className="d-flex flex-row align-items-center mb-4">
-                          <i className="fas fa-envelope fa-lg me-3 fa-fw"></i>
                           <div
                             data-mdb-input-init
                             className="form-outline flex-fill mb-0"
