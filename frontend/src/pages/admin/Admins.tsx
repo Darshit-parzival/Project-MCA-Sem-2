@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 
 const Admins = () => {
-  const [adminData, setAdminData] = useState([]);
+  const [adminData,setAdminData] = useState([]);
   const [rowsPerPage, setRowsPerPage] = useState(3);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -19,7 +19,11 @@ const Admins = () => {
     try {
       const response = await axios.post("http://localhost:8000/manager/data/");
       if (response.data.success) {
-        setAdminData(JSON.parse(response.data.data));
+        const adminDataWithIds = response.data.data.map((item: { _id: any; }) => ({
+          ...item,
+          id: item._id
+        }));
+        setAdminData(adminDataWithIds);
       }
     } catch (error) {
       console.error("Data fetching failed:", error);
@@ -45,6 +49,8 @@ const Admins = () => {
         } else {
           setMessage(response.data.message);
         }
+        console.log(adminData.id);
+        
       } else {
         setMessage("Password not same");
       }
@@ -99,6 +105,8 @@ const Admins = () => {
             <th scope="col">ID</th>
             <th scope="col">Name</th>
             <th scope="col">Email</th>
+            <th scope="col">Delete</th>
+            <th scope="col">Update Password</th>
           </tr>
         </thead>
         <tbody>
@@ -107,6 +115,8 @@ const Admins = () => {
               <th scope="row">{index + 1}</th>
               <td>{admin.name}</td>
               <td>{admin.email}</td>
+              <td><button className="text-color">Delete</button></td>
+              <td><button className="text-color">Update Password</button></td>
             </tr>
           ))}
         </tbody>

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { SetStateAction, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { FaArrowCircleDown } from "react-icons/fa";
 import axios from "axios";
@@ -6,6 +6,8 @@ import FormData from "form-data";
 
 const Shows = () => {
   const [showsData, setShowsData] = useState([]);
+  const [showToUpdate, setShowToUpdate] = useState(null);
+  const [isShowToUpdate, setIsShowToUpdate] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -18,11 +20,23 @@ const Shows = () => {
         console.error("Data fetching failed:", error);
       }
     };
-    
+
     fetchData();
   }, []);
 
+  const updateShow = (show) => {
+    setIsShowToUpdate(true);
+    setShowToUpdate(show);
+    setId(show.id);
+    setTitle(show.title);
+    setDescription(show.description);
+    setDate(show.date);
+    setTime(show.time);
+    setCity(show.city);
+    setSucMessage("")
+  };
 
+  const [id, setId] = useState("");
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [date, setDate] = useState("");
@@ -30,68 +44,112 @@ const Shows = () => {
   const [city, setCity] = useState("");
   const [sucmessage, setSucMessage] = useState("");
   const [message, setMessage] = useState("");
-  
+
   const unsetHandle = () => {
     setTitle("");
     setDescription("");
     setDate("");
   };
-  
+
   const deleteShow = async (title: any) => {
     try {
-      const response = await axios.post("http://127.0.0.1:8000/shows/delete/", { title });
+      const response = await axios.post("http://127.0.0.1:8000/shows/delete/", {
+        title,
+      });
+
       if (response.data.success) {
         const updatedShows = showsData.filter((show) => show.title !== title);
-        console.log("success");
-        
+        console.log(title);
         setShowsData(updatedShows);
       }
     } catch (error) {
       console.error("Delete operation failed:", error);
     }
-  }
+  };
   
   const handleSubmit = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
     try {
+      setId(showsData.id)
       const formData = new FormData();
-      formData.append("title", title);
+      formData.append("id",id)
+      formData.append("title",title);
       formData.append("description", description);
       formData.append("date", date);
       formData.append("city", city);
       formData.append("time", time);
       formData.append("image", document.getElementById("imageUpload").files[0]);
 
-      const response = await axios.post(
-        "http://127.0.0.1:8000/shows/create/",
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
-
-      if (response.data.success) {
-        setSucMessage(response.data.message);
-        unsetHandle();
-
-        const fetchData = async () => {
-          try {
-            const response = await axios.post("http://localhost:8000/shows/data/");
-            if (response.data.success) {
-              setShowsData(response.data.data);
-            }
-          } catch (error) {
-            console.error("Data fetching failed:", error);
+      if (isShowToUpdate) {
+        
+        const response = await axios.post(
+          "http://127.0.0.1:8000/shows/update/",
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
           }
-        };
-    
-        fetchData();
+        );
+        
+        if (response.data.success) {
+          console.log("update",document.getElementById("imageUpload").files[0]);
+          setSucMessage(response.data.message);
+          unsetHandle();
+
+          const fetchData = async () => {
+            try {
+              const response = await axios.post(
+                "http://localhost:8000/shows/data/"
+              );
+              if (response.data.success) {
+                setShowsData(response.data.data);
+              }
+            } catch (error) {
+              console.error("Data fetching failed:", error);
+            }
+          };
+
+          fetchData();
+        } else {
+          setMessage(response.data.message);
+          unsetHandle();
+          console.log(response.data);
+        }
       } else {
-        setMessage(response.data.message);
-        unsetHandle();
-        console.log(response.data);
+        const response = await axios.post(
+          "http://127.0.0.1:8000/shows/create/",
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+
+        if (response.data.success) {
+          setSucMessage(response.data.message);
+          unsetHandle();
+
+          const fetchData = async () => {
+            try {
+              const response = await axios.post(
+                "http://localhost:8000/shows/data/"
+              );
+              if (response.data.success) {
+                setShowsData(response.data.data);
+              }
+            } catch (error) {
+              console.error("Data fetching failed:", error);
+            }
+          };
+
+          fetchData();
+        } else {
+          setMessage(response.data.message);
+          unsetHandle();
+          console.log(response.data);
+        }
       }
     } catch (error) {
       setMessage("Error adding show");
@@ -107,6 +165,7 @@ const Shows = () => {
           type="button"
           className="btn-card"
           data-bs-toggle="modal"
+          onClick={() => setIsShowToUpdate(false)}
           data-bs-target="#exampleModal"
         >
           Create Show
@@ -144,18 +203,33 @@ const Shows = () => {
                   aria-labelledby={`navbarDropdown${index}`}
                 >
                   <li>
-                    <Link className="dropdown-item" to={`/update/${index}`}>
+                    <button
+                      className="dropdown-item"
+                      data-bs-toggle="modal"
+                      onClick={() => updateShow(show)}
+                      data-bs-target="#exampleModal"
+                    >
                       Update Show
-                    </Link>
+                    </button>
                   </li>
                   <hr className="dropdown-divider bg-light" />
                   <li>
-                    <label className="dropdown-item" onClick={() => deleteShow(show.title)}>
+                    <button
+                      className="dropdown-item"
+                      onClick={() => deleteShow(show.title)}
+                    >
                       Delete Show
-                    </label>
+                    </button>
                   </li>
                   <li>
-                    <label className="dropdown-item" onClick={() => localStorage.setItem("carousel", show.title)}>Add to Main Page</label>
+                    <label
+                      className="dropdown-item"
+                      onClick={() =>
+                        localStorage.setItem("carousel", show.title)
+                      }
+                    >
+                      Add to Main Page
+                    </label>
                   </li>
                 </ul>
               </div>
@@ -173,9 +247,14 @@ const Shows = () => {
         <div className="modal-dialog">
           <div className="modal-content bg-dark">
             <div className="modal-header">
-              {!sucmessage && !message && (
+              {!isShowToUpdate && !sucmessage && !message && (
                 <h5 className="modal-title" id="exampleModalLabel">
                   Create Show
+                </h5>
+              )}
+              {isShowToUpdate && !sucmessage && !message && (
+                <h5 className="modal-title" id="exampleModalLabel">
+                  Update Show
                 </h5>
               )}
               {sucmessage && !message && (
@@ -223,6 +302,7 @@ const Shows = () => {
                 <input
                   type="date"
                   id="form3Example3c"
+                  min={new Date().toISOString().split("T")[0]}
                   className="form-control"
                   placeholder="Enter Date"
                   value={date}
@@ -274,7 +354,7 @@ const Shows = () => {
                   Close
                 </button>
                 <button type="submit" id="submit" className="btn btn-primary">
-                  Create Show
+                  {!isShowToUpdate && !sucmessage && !message?"Create Show":"Update Show"}
                 </button>
               </div>
             </form>

@@ -2,7 +2,7 @@ import datetime
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import json
-from bson import json_util
+from bson import ObjectId, json_util
 import os
 from db_connect import db
 import base64
@@ -50,7 +50,7 @@ def admin_data(request):
     if request.method == 'POST':
         data = list(db['admin'].find()) 
         if data:
-            serialized_data = json_util.dumps(data)
+            serialized_data = json_util.dumps(data, indent=4, default=str)
             return JsonResponse({'success': True, 'message': 'Data Retrieved', 'data': serialized_data})
         else:
             return JsonResponse({'success': False, 'message': 'Details are wrong!'})
@@ -74,7 +74,7 @@ def count_data(request):
         ttl_admin = db['admin'].count_documents({})
         ttl_fans = db['fans'].count_documents({}) 
         ttl_comedians = db['comedians'].count_documents({}) 
-        ttl_contacts = db['contacts'].count_documents({}) 
+        ttl_contacts = db['contact'].count_documents({}) 
         
         return JsonResponse({'success': True, 'message': 'Data Retrieved', 'data': {'total_admin': ttl_admin, 'total_fans': ttl_fans, 'total_comedians':ttl_comedians, 'total_contacts':ttl_contacts}})
     else:
@@ -83,10 +83,10 @@ def count_data(request):
 @csrf_exempt
 def delete_show(request):
     if request.method == 'POST':
-        title = request.POST.get('title')
-
+        data = json.loads(request.body)
+        title = data.get('title')
         try:
-            if db['shows'].delete_one({'title':t}):
+            if db['shows'].delete_one({'title':title}):
                 return JsonResponse({'success': True, 'message': 'Show deleted successfully'})
             else:
                 return JsonResponse({'success': False, 'message': 'Show deleted successfully'})
@@ -95,6 +95,67 @@ def delete_show(request):
             return JsonResponse({'success': False, 'error': str(e)})
     else:
         return JsonResponse({'success': False, 'error': 'Only POST requests are allowed'})
+    
+@csrf_exempt
+def update_show(request):
+    if request.method == 'POST':
+        if request.method == 'POST':
+            if all(field in request.POST for field in ['id','title', 'description', 'date', 'city', 'time']):
+                id=request.POST['id']
+                title = request.POST['title']
+                description = request.POST['description']
+                date = request.POST['date']
+                city = request.POST['city']
+                time = request.POST['time']
+                
+                if 'image' in request.FILES:
+                    existing_show = db['shows'].find_one({"_id": ObjectId(id)})
+                    if existing_show:
+                        existing_image = existing_show.get('image', None)
+                        upload_directory = 'includes/shows/'
+                        image_path = os.path.join(upload_directory, existing_image)
+                        
+                        if os.path.exists(image_path):
+                            os.remove(image_path)
+                            print(f"Image {existing_image} deleted successfully")
+                        else:
+                            print(f"Image {existing_image} does not exist")
+                    else:
+                        return JsonResponse({'success': False, 'error': 'Document not found'})
+                    
+                    uploaded_image = request.FILES['image']
+                    
+                    timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+                    file_extension = os.path.splitext(uploaded_image.name)[1]
+                    new_filename = f"{timestamp}_CCSHOW{file_extension}"
+                    upload_directory = 'includes/shows/'
+                    os.makedirs(upload_directory, exist_ok=True)
+
+                    with open(os.path.join(upload_directory, new_filename), 'wb+') as destination:
+                        for chunk in uploaded_image.chunks():
+                            destination.write(chunk)
+                    data = {
+                    "title": title,
+                    "description": description,
+                    "date": date,
+                    "city": city,
+                    "time": time,
+                    "image": new_filename
+                    }
+                    result = db['shows'].update_one({"_id": ObjectId(id)}, {"$set": data})
+                    if result:
+                        return JsonResponse({'success': True, 'message': 'Show Updated successfully'})
+                    else:
+                        return JsonResponse({'success': False, 'message': 'Show not Updated successfully'})
+                else:
+                    return JsonResponse({'success': False, 'message': 'Modal Not Found'})
+            else:
+                return JsonResponse({'success': False, 'message': 'Modal Not Found'})
+        else:
+                return JsonResponse({'success': False, 'message': 'Not is Post'})
+    else:
+        return JsonResponse({'success': False, 'error': 'Only POST requests are allowed'})
+
 
 @csrf_exempt
 def create_show(request):
@@ -128,8 +189,10 @@ def create_show(request):
                     "image": new_filename
                 }
 
-                if db['shows'].insert_one(data):
-                    return JsonResponse({'success': True, 'message': 'Show created successfully'})
+                result = db['shows'].insert_one(data)
+                if result.inserted_id:
+                    inserted_id_str = str(result.inserted_id)
+                    return JsonResponse({'success': True, 'message': 'Show created successfully', 'id': inserted_id_str})
                 else:
                     return JsonResponse({'success': False, 'message': 'Show not created successfully'})
             else:
@@ -147,6 +210,7 @@ def shows_data(request):
             serialized_data = []
             for show in data:
                 show_data = {
+                    'id': str(show['_id']),
                     'title': show['title'],
                     'description': show['description'],
                     'date': show['date'],
