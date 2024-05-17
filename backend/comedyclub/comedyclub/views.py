@@ -79,7 +79,23 @@ def count_data(request):
         return JsonResponse({'success': True, 'message': 'Data Retrieved', 'data': {'total_admin': ttl_admin, 'total_fans': ttl_fans, 'total_comedians':ttl_comedians, 'total_contacts':ttl_contacts}})
     else:
         return JsonResponse({'success': False, 'error': 'Only POST requests are allowed'})
-    
+
+@csrf_exempt
+def delete_show(request):
+    if request.method == 'POST':
+        title = request.POST.get('title')
+
+        try:
+            if db['shows'].delete_one({'title':t}):
+                return JsonResponse({'success': True, 'message': 'Show deleted successfully'})
+            else:
+                return JsonResponse({'success': False, 'message': 'Show deleted successfully'})
+                
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': str(e)})
+    else:
+        return JsonResponse({'success': False, 'error': 'Only POST requests are allowed'})
+
 @csrf_exempt
 def create_show(request):
     if request.method == 'POST':

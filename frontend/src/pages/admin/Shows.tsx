@@ -18,7 +18,7 @@ const Shows = () => {
         console.error("Data fetching failed:", error);
       }
     };
-
+    
     fetchData();
   }, []);
 
@@ -30,13 +30,27 @@ const Shows = () => {
   const [city, setCity] = useState("");
   const [sucmessage, setSucMessage] = useState("");
   const [message, setMessage] = useState("");
-
+  
   const unsetHandle = () => {
     setTitle("");
     setDescription("");
     setDate("");
   };
-
+  
+  const deleteShow = async (title: any) => {
+    try {
+      const response = await axios.post("http://127.0.0.1:8000/shows/delete/", { title });
+      if (response.data.success) {
+        const updatedShows = showsData.filter((show) => show.title !== title);
+        console.log("success");
+        
+        setShowsData(updatedShows);
+      }
+    } catch (error) {
+      console.error("Delete operation failed:", error);
+    }
+  }
+  
   const handleSubmit = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
     try {
@@ -136,9 +150,9 @@ const Shows = () => {
                   </li>
                   <hr className="dropdown-divider bg-light" />
                   <li>
-                    <Link className="dropdown-item" to={`/delete/${index}`}>
+                    <label className="dropdown-item" onClick={() => deleteShow(show.title)}>
                       Delete Show
-                    </Link>
+                    </label>
                   </li>
                   <li>
                     <label className="dropdown-item" onClick={() => localStorage.setItem("carousel", show.title)}>Add to Main Page</label>

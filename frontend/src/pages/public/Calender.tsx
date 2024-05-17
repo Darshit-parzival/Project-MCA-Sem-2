@@ -12,13 +12,18 @@ const Calender = () => {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [isExpanded, setIsExpanded] = useState(false);
 
+  const handleBookShow = (show) => {
+    sessionStorage.setItem('bookedShow', JSON.stringify(show));
+    console.log('Show booked:', show);
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await axios.post("http://localhost:8000/shows/data/");
         if (response.data.success) {
           setAllShowsData(response.data.data);
-          setFilteredShows(response.data.data); // Initially, set filtered shows to all shows
+          setFilteredShows(response.data.data);
         }
       } catch (error) {
         console.error("Data fetching failed:", error);
@@ -109,7 +114,7 @@ const Calender = () => {
                 <div className="card-body">
                   <h5 className="card-title">{show.title}</h5>
                   <p className="card-text">{show.description}</p>
-                  <button type="submit" className="btn-card">
+                  <button type="submit" className="btn-card"  onClick={() => handleBookShow(show)}>
                     Book Show
                   </button>
                 </div>
