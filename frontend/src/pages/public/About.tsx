@@ -1,8 +1,26 @@
 import Header from "../includes/components/Header";
 import "../includes/assets/css/about.css";
 import Footer from "../includes/components/Footer";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 const About = () => {
+  const [aboutData, setAboutData] = useState("");
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const fetchData = async () => {
+    try {
+      const response = await axios.post("http://127.0.0.1:8000/about/data/");
+      console.log("Response from API:", response.data.about);
+      if (response.data.success) {
+        setAboutData(response.data.about);
+      }
+    } catch (error) {
+      console.error("Data fetching failed:", error);
+    }
+  };
   return (
     <div>
       <Header />
@@ -20,48 +38,11 @@ const About = () => {
               style={{ backgroundColor: "rgb(17,17,17)", marginTop: "10px" }}
             >
               <h4>About Comedy Club</h4>
-              <p>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Earum
-                laboriosam repudiandae dignissimos amet inventore exercitationem
-                consequuntur. Praesentium, ad eligendi, perferendis dolor nihil
-                ipsam itaque, expedita voluptate voluptatum maiores quas ab.
-              </p>
-              <p>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Earum
-                laboriosam repudiandae dignissimos amet inventore exercitationem
-                consequuntur. Praesentium, ad eligendi, perferendis dolor nihil
-                ipsam itaque, expedita voluptate voluptatum maiores quas ab.
-              </p>
-              <p>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Earum
-                laboriosam repudiandae dignissimos amet inventore exercitationem
-                consequuntur. Praesentium, ad eligendi, perferendis dolor nihil
-                ipsam itaque, expedita voluptate voluptatum maiores quas ab.
-              </p>
-              <p>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Earum
-                laboriosam repudiandae dignissimos amet inventore exercitationem
-                consequuntur. Praesentium, ad eligendi, perferendis dolor nihil
-                ipsam itaque, expedita voluptate voluptatum maiores quas ab.
-              </p>
-              <p>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Earum
-                laboriosam repudiandae dignissimos amet inventore exercitationem
-                consequuntur. Praesentium, ad eligendi, perferendis dolor nihil
-                ipsam itaque, expedita voluptate voluptatum maiores quas ab.
-              </p>
-              <p>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Earum
-                laboriosam repudiandae dignissimos amet inventore exercitationem
-                consequuntur. Praesentium, ad eligendi, perferendis dolor nihil
-                ipsam itaque, expedita voluptate voluptatum maiores quas ab.
-              </p>
-              <p>
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Earum
-                laboriosam repudiandae dignissimos amet inventore exercitationem
-                consequuntur. Praesentium, ad eligendi, perferendis dolor nihil
-                ipsam itaque, expedita voluptate voluptatum maiores quas ab.
-              </p>
+              <div>
+                {aboutData.split(/[.?]/).map((sentence, index) => (
+                  <p key={index}>{sentence.trim()}</p>
+                ))}
+              </div>
             </div>
           </div>
         </div>

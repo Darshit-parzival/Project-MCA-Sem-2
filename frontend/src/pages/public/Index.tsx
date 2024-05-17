@@ -4,8 +4,26 @@ import "../includes/assets/css/Index.css";
 import Header from "../includes/components/Header";
 import { FaFacebook, FaYoutube, FaInstagram } from "react-icons/fa";
 import Footer from "../includes/components/Footer";
+import axios from "axios";
+import { useEffect, useState } from "react";
 
 const Index = () => {
+  const [showsData, setShowsData] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.post("http://localhost:8000/shows/data/");
+        if (response.data.success) {
+          setShowsData(response.data.data);
+        }
+      } catch (error) {
+        console.error("Data fetching failed:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
   return (
     <>
       <div className="bg" style={{ height: "550px" }}>
@@ -19,36 +37,45 @@ const Index = () => {
                 data-bs-ride="carousel"
               >
                 <div className="carousel-inner">
-                  <div className="carousel-item active">
-                    <div
-                      className="card mb-3 bg-dark text-white"
-                      style={{ height: "350px" }}
-                    >
-                      <div className="row g-0">
-                        <div className="col-md-4">
-                          <img
-                            src={Img1}
-                            className="c-img rounded-start"
-                          />
-                        </div>
-                        <div className="col-md-8">
-                          <div className="card-body">
-                            <h5 className="card-title">Card title</h5>
-                            <p className="card-text mt-4">
-                              This is a wider card with supporting text below as
-                              a natural lead-in to additional content. This
-                              content is a little bit longer.
-                            </p>
-                            <p className="card-text">
-                              <small className="text-muted">
-                                Last updated 3 mins ago
-                              </small>
-                            </p>
+                  {showsData.map(
+                    (show, index) =>
+                      localStorage.getItem("carousel") === show.title && (
+                        <div
+                          className={`carousel-item ${
+                            index !== -1 ? "active" : ""
+                          }`}
+                          key={index}
+                        >
+                          <div
+                            className="card mb-3 bg-dark text-white"
+                            style={{ height: "350px" }}
+                          >
+                            <div className="row g-0">
+                              <div className="col-md-4">
+                                <img
+                                  src={`data:image/jpeg;base64, ${show.image_data}`}
+                                  className="c-img rounded-start"
+                                  alt={show.title}
+                                />
+                              </div>
+                              <div className="col-md-8">
+                                <div className="card-body">
+                                  <h5 className="card-title">{show.title}</h5>
+                                  <p className="card-text mt-4">
+                                    {show.description}
+                                  </p>
+                                  <p className="card-text">
+                                    <small className="text-muted">
+                                      Date: {show.date}, Time: {show.time}
+                                    </small>
+                                  </p>
+                                </div>
+                              </div>
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    </div>
-                  </div>
+                      )
+                  )}
                 </div>
               </div>
             </div>
@@ -119,21 +146,30 @@ const Index = () => {
         </ul>
       </div>
       <div className="d-flex justify-content-center">
-      <div className="card card-custom" style={{ width: '18rem' }}>
-        <img src={Img1} className="card-img-top" alt="..." />
-        <div className="card-body">
-          <h5 className="card-title">Card title</h5>
-          <p className="card-text">
-            Some quick example text to build on the card title and make up the
-            bulk of the card's content.
-          </p>
-        </div>
-        <div className="card-body">
-        <button type="submit" className="btn-card">Book SHow</button>
-        </div>
+        {showsData.map((card, index) => (
+          <div
+            className="card card-custom"
+            style={{ width: "18rem" }}
+            key={index}
+          >
+            <img
+              src={`data:image/jpeg;base64, ${card.image_data}`}
+              className="card-img-top"
+              alt={card.title}
+            />
+            <div className="card-body">
+              <h5 className="card-title">{card.title}</h5>
+              <p className="card-text">{card.description}</p>
+            </div>
+            <div className="card-body">
+              <button type="submit" className="btn-card">
+                Book Show
+              </button>
+            </div>
+          </div>
+        ))}
       </div>
-    </div>
-    <Footer />
+      <Footer />
     </>
   );
 };

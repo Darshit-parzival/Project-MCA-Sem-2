@@ -1,16 +1,25 @@
 import logo from "../includes/assets/img/logo.png";
 import "../includes/assets/css/adminDashboard.css";
-import { FaCalendar, FaHome } from "react-icons/fa";
-import { useState } from "react";
+import { FaCalendar, FaHome, FaPen, FaQuestion } from "react-icons/fa";
+import { SetStateAction, useState } from "react";
 import { Link } from "react-router-dom";
 import Shows from "./Shows";
 import Admins from "./Admins";
 import Dashboard from "./Dashboard";
+import Comedians from "./Comedians";
+import { FaLocationPin, FaPeopleGroup, FaPerson } from "react-icons/fa6";
+import Locations from "./Locations";
+import AboutAdmin from "./AboutAdmin";
+import Faq from "./Faq";
 
 const Home = () => {
-  const [showDashboard, setShowDashboard] = useState(true);
+  const [activeNavItem, setActiveNavItem] = useState("dashboard");
   const [showShows, setShowShows] = useState(false);
   const [admins, setAdmins] = useState(false);
+  const [comedians, SetComedians] = useState(false);
+  const [locations, SetLocations] = useState(false);
+  const [about, SetAbout] = useState(false);
+  const [faq, SetFaq] = useState(false);
 
   const admin = sessionStorage.getItem("admin");
 
@@ -19,24 +28,14 @@ const Home = () => {
     window.location.href = "/admin";
   };
 
-  const handleClick = () => {
-    setShowDashboard(true);
-    document.getElementById("dashboard").classList.add("txt-color");
-    document.getElementById("shows").classList.remove("txt-color");
-    setShowShows(false);
-    setAdmins(false);
-  };
-  const handleShows = () => {
-    setShowShows(true);
-    document.getElementById("shows").classList.add("txt-color");
-    document.getElementById("dashboard").classList.remove("txt-color");
-    setShowDashboard(false);
-    setAdmins(false);
-  };
-  const handleAdmins = () => {
-    setShowDashboard(false);
-    setShowShows(false);
-    setAdmins(true);
+  const handleNavClick = (navItem: SetStateAction<string>) => {
+    setActiveNavItem(navItem);
+    setShowShows(navItem === "shows");
+    setAdmins(navItem === "admins");
+    SetComedians(navItem === "comedians");
+    SetLocations(navItem === "locations");
+    SetAbout(navItem === "about");
+    SetFaq(navItem === "faq");
   };
 
   return (
@@ -44,7 +43,7 @@ const Home = () => {
       <header className="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
         <Link
           className="navbar-brand col-md-3 col-lg-2 me-0 px-3"
-          onClick={handleClick}
+          onClick={() => handleNavClick("dashboard")}
           to="/admin/home"
         >
           <img src={logo} width="40" height="40" alt="logo" className="me-2" />
@@ -53,9 +52,9 @@ const Home = () => {
         <span className=" w-100">Ahoy, {admin}!</span>
         <div className="navbar-nav">
           <div className="nav-item text-nowrap">
-            <a className="nav-link px-3" onClick={logout}>
+            <label className="nav-link px-3" onClick={logout}>
               Sign out
-            </a>
+            </label>
           </div>
         </div>
       </header>
@@ -71,85 +70,78 @@ const Home = () => {
               <ul className="nav flex-column">
                 <li className="nav-item">
                   <label
-                    className="nav-link text-white"
-                    aria-current="page"
-                    id="dashboard"
-                    onClick={handleClick}
+                    className={`nav-link text-white ${activeNavItem === "dashboard" ? "active" : ""}`}
+                    onClick={() => handleNavClick("dashboard")}
                   >
                     <FaHome className="me-1 mb-1" />
                     Dashboard
                   </label>
                 </li>
                 <li className="nav-item">
-                  <label className="nav-link text-white" id="shows" onClick={handleShows}>
+                  <label
+                    className={`nav-link text-white ${activeNavItem === "shows" ? "active" : ""}`}
+                    onClick={() => handleNavClick("shows")}
+                  >
                     <FaCalendar className="me-1 mb-1" />
                     Shows
                   </label>
                 </li>
                 <li className="nav-item">
-                  <label className="nav-link text-white" onClick={handleAdmins}>
+                  <label
+                    className={`nav-link text-white ${activeNavItem === "admins" ? "active" : ""}`}
+                    onClick={() => handleNavClick("admins")}
+                  >
+                    <FaPerson className="me-1 mb-1" />
                     Admin
                   </label>
                 </li>
                 <li className="nav-item">
-                  <a className="nav-link text-white" href="#">
-                    <span data-feather="users"></span>
+                  <label
+                    className={`nav-link text-white ${activeNavItem === "comedians" ? "active" : ""}`}
+                    onClick={() => handleNavClick("comedians")}
+                  >
+                    <FaPeopleGroup className="me-1 mb-1" />
                     Comedians
-                  </a>
+                  </label>
                 </li>
                 <li className="nav-item">
-                  <a className="nav-link text-white" href="#">
-                    <span data-feather="bar-chart-2"></span>
-                    FAQ
-                  </a>
+                  <label
+                    className={`nav-link text-white ${activeNavItem === "comedians" ? "active" : ""}`}
+                    onClick={() => handleNavClick("locations")}
+                  >
+                    <FaLocationPin className="me-1 mb-1" />
+                    Locations
+                  </label>
                 </li>
                 <li className="nav-item">
-                  <a className="nav-link text-white" href="#">
-                    <span data-feather="layers"></span>
-                    Contact us
-                  </a>
-                </li>
-              </ul>
-
-              <h6 className="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
-                <span>Live Streaming</span>
-                <a
-                  className="link-secondary"
-                  href="#"
-                  aria-label="Add a new report"
-                ></a>
-              </h6>
-              <ul className="nav flex-column mb-2">
-                <li className="nav-item">
-                  <a className="nav-link text-white" href="#">
-                    Set up
-                  </a>
+                  <label
+                    className={`nav-link text-white ${activeNavItem === "comedians" ? "active" : ""}`}
+                    onClick={() => handleNavClick("about")}
+                  >
+                    <FaPen className="me-1 mb-1" />
+                    About
+                  </label>
                 </li>
                 <li className="nav-item">
-                  <a className="nav-link text-white" href="#">
-                    <span data-feather="file-text"></span>
-                    Last quarter
-                  </a>
-                </li>
-                <li className="nav-item">
-                  <a className="nav-link text-white" href="#">
-                    <span data-feather="file-text"></span>
-                    Social engagement
-                  </a>
-                </li>
-                <li className="nav-item">
-                  <a className="nav-link text-white" href="#">
-                    <span data-feather="file-text"></span>
-                    Year-end sale
-                  </a>
+                  <label
+                    className={`nav-link text-white ${activeNavItem === "comedians" ? "active" : ""}`}
+                    onClick={() => handleNavClick("faq")}
+                  >
+                    <FaQuestion className="me-1 mb-1" />
+                    Frequently Asked Questions?
+                  </label>
                 </li>
               </ul>
             </div>
           </nav>
           <div className="col-md-9 ms-sm-auto col-lg-10 px-md-4">
-            {showDashboard && <Dashboard />}
+            {activeNavItem === "dashboard" && <Dashboard />}
             {admins && <Admins />}
             {showShows && <Shows />}
+            {comedians && <Comedians />}
+            {locations && <Locations />}
+            {about && <AboutAdmin />}
+            {faq && <Faq />}
           </div>
         </div>
       </div>

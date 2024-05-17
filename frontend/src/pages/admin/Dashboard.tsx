@@ -5,8 +5,8 @@ const Dashboard = () => {
   const [counts, setCounts] = useState({
     total_admin: 0,
     total_fans: 0,
-    // total_comedians: 0,
-    // total_contact: 0
+    total_comedians: 0,
+    total_contacts: 0
   });
 
   useEffect(() => {
@@ -101,7 +101,7 @@ const Dashboard = () => {
               </div>
               <div className="ms-2">
                 <label className="text-muted">Total Comedians:</label>
-                {/* <label>{counts.total_comedian}</label> */}
+                <label>{counts.total_comedians}</label>
               </div>
             </div>
           </div>
@@ -126,7 +126,7 @@ const Dashboard = () => {
               </div>
               <div className="ms-2">
                 <label className="text-muted">Total Contact Us:</label>
-                {/* <label>{counts.total_contact}</label> */}
+                <label>{counts.total_contacts}</label>
               </div>
             </div>
           </div>

@@ -2,9 +2,28 @@ import Footer from "../includes/components/Footer";
 import Header from "../includes/components/Header";
 import "../includes/assets/css/comedians.css";
 import { FaSearch } from "react-icons/fa";
-import Img1 from "../includes/assets/img/Img1.jpg";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 const Comedians = () => {
+  const [allComediansData, setAllComediansData] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.post(
+          "http://localhost:8000/comedian/data/"
+        );
+        if (response.data.success) {
+          setAllComediansData(response.data.data);
+        }
+      } catch (error) {
+        console.error("Data fetching failed:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
   return (
     <div>
       <Header />
@@ -41,54 +60,31 @@ const Comedians = () => {
                 </form>
               </div>
               <div className="mt-5 d-flex justify-content-center">
-                <div
-                  className="card mb-3 bg-dark text-white"
-                  style={{ maxWidth: "540px" }}
-                >
-                  <div className="row g-0">
-                    <div className="col-md-4">
-                      <img src={Img1} className="img-fluid rounded-start" />
-                    </div>
-                    <div className="col-md-8">
-                      <div className="card-body">
-                        <h5 className="card-title">Title</h5>
-                        <p className="card-text">
-                          Lorem ipsum dolor sit amet consectetur adipisicing
-                          elit. Ex, repudiandae. Perspiciatis dolorum similique
-                          cupiditate doloribus facere maxime ex libero quisquam,
-                          repellat distinctio ad vero accusamus blanditiis, sunt
-                          minus cumque illo.
-                        </p>
+                {allComediansData.map((comedian, index) => (
+                  <div
+                    key={index}
+                    className={`card mb-3 bg-dark text-white ${
+                      index !== 0 ? "ms-3" : ""
+                    }`}
+                    style={{ maxWidth: "540px" }}
+                  >
+                    <div className="row g-0">
+                      <div className="col-md-4">
+                        <img
+                          src={`data:image/jpeg;base64, ${comedian.image_data}`}
+                          className="img-fluid rounded-start w-auto h-auto"
+                          alt={comedian.name}
+                        />
+                      </div>
+                      <div className="col-md-8">
+                        <div className="card-body">
+                          <h5 className="card-title">{comedian.name}</h5>
+                          <p className="card-text">{comedian.description}</p>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-                <div
-                  className="card mb-3 ms-3 bg-dark text-white"
-                  style={{ maxWidth: "540px" }}
-                >
-                  <div className="row g-0">
-                    <div className="col-md-4">
-                      <img
-                        src={Img1}
-                        className="img-fluid rounded-start"
-                        alt="..."
-                      />
-                    </div>
-                    <div className="col-md-8">
-                      <div className="card-body">
-                        <h5 className="card-title">Title</h5>
-                        <p className="card-text">
-                          Lorem ipsum, dolor sit amet consectetur adipisicing
-                          elit. At nulla provident neque magni veniam, eveniet
-                          perferendis praesentium labore iure officia ut odio
-                          vel quia, dolorum architecto laboriosam dolor dicta
-                          fuga.
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                ))}
               </div>
             </div>
           </div>

@@ -1,17 +1,44 @@
 import Header from "../includes/components/Header";
 import "../includes/assets/css/Calender.css";
 import Calendar from "react-calendar";
-import Img1 from "../includes/assets/img/Img1.jpg";
 import "react-calendar/dist/Calendar.css";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Footer from "../includes/components/Footer";
+import axios from "axios";
 
 const Calender = () => {
+  const [allShowsData, setAllShowsData] = useState([]);
+  const [filteredShows, setFilteredShows] = useState([]);
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [isExpanded, setIsExpanded] = useState(false);
 
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.post("http://localhost:8000/shows/data/");
+        if (response.data.success) {
+          setAllShowsData(response.data.data);
+          setFilteredShows(response.data.data); // Initially, set filtered shows to all shows
+        }
+      } catch (error) {
+        console.error("Data fetching failed:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
   const handleDateChange = (date) => {
     setSelectedDate(date);
+    filterShows(date);
+  };
+
+  const filterShows = (date) => {
+    const filtered = allShowsData.filter(show => {
+      const showDate = new Date(show.date);
+      return showDate.toDateString() === date.toDateString();
+    });
+    setFilteredShows(filtered);
   };
 
   const toggleCalendar = () => {
@@ -60,7 +87,7 @@ const Calender = () => {
                 value={selectedDate}
                 minDate={new Date()}
                 maxDate={
-                  new Date(new Date().setMonth(new Date().getMonth() + 1))
+                  new Date(new Date().setMonth(new Date().getFullYear() + 10))
                 }
               />
             </div>
@@ -68,55 +95,28 @@ const Calender = () => {
         </div>
       </div>
       <div className="d-flex justify-content-center">
-        <div
-          className="card mb-3 bg-dark text-white"
-          style={{ maxWidth: "540px" }}
-        >
-          <div className="row g-0" style={{ marginLeft: "-10px" }}>
-            <div className="col-md-4">
-              <img src={Img1} className="img-fluid rounded-start" />
-            </div>
-            <div className="col-md-8">
-              <div className="card-body">
-                <h5 className="card-title">Title</h5>
-                <p className="card-text">
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit. Ex,
-                  repudiandae. Perspiciatis dolorum similique cupiditate
-                  doloribus facere maxime ex libero quisquam, repellat
-                  distinctio ad vero accusamus blanditiis, sunt minus cumque
-                  illo.
-                </p>
-                <button type="submit" className="btn-card">
-                    Book SHow
+        {filteredShows.map((show, index) => (
+          <div
+            key={index}
+            className="card mb-3 bg-dark text-white"
+            style={{ maxWidth: "500px", marginLeft: index !== 0 ? "15px" : "0" }}
+          >
+            <div className="row g-0">
+              <div className="col-md-4">
+                <img src={`data:image/jpeg;base64, ${show.image_data}`} className="h-auto w-auto img-fluid rounded-start" alt={show.title} />
+              </div>
+              <div className="col-md-8">
+                <div className="card-body">
+                  <h5 className="card-title">{show.title}</h5>
+                  <p className="card-text">{show.description}</p>
+                  <button type="submit" className="btn-card">
+                    Book Show
                   </button>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        <div
-          className="card mb-3 ms-3 bg-dark text-white"
-          style={{ maxWidth: "540px" }}
-        >
-          <div className="row g-0">
-            <div className="col-md-4">
-              <img src={Img1} className="img-fluid rounded-start" alt="..." />
-            </div>
-            <div className="col-md-8">
-              <div className="card-body">
-                <h5 className="card-title">Title</h5>
-                <p className="card-text">
-                  Lorem ipsum, dolor sit amet consectetur adipisicing elit. At
-                  nulla provident neque magni veniam, eveniet perferendis
-                  praesentium labore iure officia ut odio vel quia, dolorum
-                  architecto laboriosam dolor dicta fuga.
-                </p>
-                <button type="submit" className="btn-card">
-                    Book SHow
-                  </button>
-              </div>
-            </div>
-          </div>
-        </div>
+        ))}
       </div>
       <Footer />
     </div>

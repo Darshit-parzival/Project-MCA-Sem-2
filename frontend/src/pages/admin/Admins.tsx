@@ -1,33 +1,30 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 
 const Admins = () => {
   const [adminData, setAdminData] = useState([]);
   const [rowsPerPage, setRowsPerPage] = useState(3);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.post(
-          "http://localhost:8000/manager/data/"
-        );
-        if (response.data.success) {
-          setAdminData(JSON.parse(response.data.data));
-        }
-      } catch (error) {
-        console.error("Data fetching failed:", error);
-      }
-    };
-
-    fetchData();
-  }, []);
-
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [cpassword, setCPassword] = useState("");
   const [sucmessage, setSucMessage] = useState("");
   const [message, setMessage] = useState("");
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const fetchData = async () => {
+    try {
+      const response = await axios.post("http://localhost:8000/manager/data/");
+      if (response.data.success) {
+        setAdminData(JSON.parse(response.data.data));
+      }
+    } catch (error) {
+      console.error("Data fetching failed:", error);
+    }
+  };
 
   const handleSubmit = async (e: { preventDefault: () => void; }) => {
     e.preventDefault();
@@ -40,15 +37,11 @@ const Admins = () => {
         });
         if (response.data.success) {
           setSucMessage(response.data.message);
+          fetchData();
           setName("");
           setEmail("");
           setPassword("");
           setCPassword("");
-  
-          const updatedResponse = await axios.post("http://localhost:8000/manager/data/");
-          if (updatedResponse.data.success) {
-            setAdminData(JSON.parse(updatedResponse.data.data));
-          }
         } else {
           setMessage(response.data.message);
         }
@@ -68,6 +61,12 @@ const Admins = () => {
     setSucMessage("");
     setMessage("");
   };
+
+  const modalTitle = sucmessage
+    ? { className: "txt-color-success", text: sucmessage }
+    : message
+    ? { className: "txt-color", text: message }
+    : { className: "", text: "Add Admin" };
 
   return (
     <div>
@@ -123,24 +122,9 @@ const Admins = () => {
         <div className="modal-dialog">
           <div className="modal-content bg-dark">
             <div className="modal-header">
-              {!sucmessage && !message && (
-                <h5 className="modal-title" id="exampleModalLabel">
-                  Add Admin
-                </h5>
-              )}
-              {sucmessage && !message && (
-                <h5
-                  className="modal-title txt-color-success"
-                  id="exampleModalLabel"
-                >
-                  {sucmessage}
-                </h5>
-              )}
-              {!sucmessage && message && (
-                <h5 className="modal-title txt-color" id="exampleModalLabel">
-                  {message}
-                </h5>
-              )}
+              <h5 className={`modal-title ${modalTitle.className}`} id="exampleModalLabel">
+                {modalTitle.text}
+              </h5>
               <button
                 type="button"
                 className="btn-close bg-light"
@@ -150,72 +134,42 @@ const Admins = () => {
               ></button>
             </div>
             <form method="post" onSubmit={handleSubmit}>
-              <div className="modal-body">
-                <div className="d-flex flex-row align-items-center mb-4">
-                  <div
-                    data-mdb-input-init
-                    className="form-outline flex-fill mb-0"
-                  >
-                    <input
-                      type="text"
-                      id="form3Example3c"
-                      className="form-control"
-                      placeholder="Enter your Name"
-                      value={name}
-                      onChange={(e) => setName(e.target.value)}
-                    />
-                    <label className="form-label">Enter Name</label>
-                  </div>
-                </div>
-                <div className="d-flex flex-row align-items-center mb-4">
-                  <div
-                    data-mdb-input-init
-                    className="form-outline flex-fill mb-0"
-                  >
-                    <input
-                      type="email"
-                      id="form3Example3c"
-                      className="form-control"
-                      placeholder="Enter your Email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value.toLowerCase())}
-                    />
-                    <label className="form-label">Enter Email</label>
-                  </div>
-                </div>
-                <div className="d-flex flex-row align-items-center mb-4">
-                  <div
-                    data-mdb-input-init
-                    className="form-outline flex-fill mb-0"
-                  >
-                    <input
-                      type="password"
-                      id="form3Example3c"
-                      className="form-control"
-                      placeholder="Create Password"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                    />
-                    <label className="form-label">Create your password</label>
-                  </div>
-                </div>
-                <div className="d-flex flex-row align-items-center mb-4">
-                  <div
-                    data-mdb-input-init
-                    className="form-outline flex-fill mb-0"
-                  >
-                    <input
-                      type="password"
-                      id="form3Example3c"
-                      className="form-control"
-                      placeholder="Confirm Password"
-                      value={cpassword}
-                      onChange={(e) => setCPassword(e.target.value)}
-                    />
-                    <label className="form-label">Confirm your password</label>
-                  </div>
-                </div>
-              </div>
+              <input
+                type="text"
+                id="form3Example3cName"
+                className="form-control"
+                placeholder="Enter your Name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+              />
+              <label className="form-label">Enter Name</label>
+              <input
+                type="email"
+                id="form3Example3cEmail"
+                className="form-control"
+                placeholder="Enter your Email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value.toLowerCase())}
+              />
+              <label className="form-label">Enter Email</label>
+              <input
+                type="password"
+                id="form3Example3cPassword"
+                className="form-control"
+                placeholder="Create Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+              <label className="form-label">Create your password</label>
+              <input
+                type="password"
+                id="form3Example3cCPassword"
+                className="form-control"
+                placeholder="Confirm Password"
+                value={cpassword}
+                onChange={(e) => setCPassword(e.target.value)}
+              />
+              <label className="form-label">Confirm your password</label>
               <div className="modal-footer">
                 <button
                   type="button"

@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import logo from "../includes/assets/img/adminlogin.png"
 
 const Index = () => {
   const [email, setEmail] = useState("");
@@ -72,7 +73,6 @@ const Index = () => {
                         </div>
 
                         <div className="d-flex flex-row align-items-center mb-4">
-                          <i className="fas fa-lock fa-lg me-3 fa-fw"></i>
                           <div
                             data-mdb-input-init
                             className="form-outline flex-fill mb-0"
@@ -104,7 +104,14 @@ const Index = () => {
                         </Link>
                       </form>
                     </div>
-                    
+                    <div className="col-md-10 col-lg-6 col-xl-7 d-flex align-items-center order-1 order-lg-2">
+                     <img
+                        src={logo}
+                        className="me-3 img-fluid"
+                        style={{ height: "auto",width:"50%" }}
+                        alt="Sample image"
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
