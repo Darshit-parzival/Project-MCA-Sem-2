@@ -84,12 +84,22 @@ def count_data(request):
 def delete_show(request):
     if request.method == 'POST':
         data = json.loads(request.body)
-        title = data.get('title')
+        id = data.get('id')
         try:
-            if db['shows'].delete_one({'title':title}):
-                return JsonResponse({'success': True, 'message': 'Show deleted successfully'})
-            else:
-                return JsonResponse({'success': False, 'message': 'Show deleted successfully'})
+            image=db['shows'].find_one({"_id":ObjectId(id)})
+            if image:
+                existing_image = image.get('image', None)
+                upload_directory = 'includes/shows/'
+                image_path = os.path.join(upload_directory, existing_image)
+                    
+                if os.path.exists(image_path):
+                    os.remove(image_path)
+                    if db['shows'].delete_one({'_id':ObjectId(id)}):
+                        return JsonResponse({'success': True, 'message': 'Show deleted successfully'})
+                    else:
+                        return JsonResponse({'success': False, 'message': 'Show not deleted successfully'})
+                else:
+                    print(f"Image {existing_image} does not exist")
                 
         except Exception as e:
             return JsonResponse({'success': False, 'error': str(e)})
@@ -100,13 +110,14 @@ def delete_show(request):
 def update_show(request):
     if request.method == 'POST':
         if request.method == 'POST':
-            if all(field in request.POST for field in ['id','title', 'description', 'date', 'city', 'time']):
+            if all(field in request.POST for field in ['id','title', 'description', 'date', 'city', 'time', 'main_pg']):
                 id=request.POST['id']
                 title = request.POST['title']
                 description = request.POST['description']
                 date = request.POST['date']
                 city = request.POST['city']
                 time = request.POST['time']
+                main_pg = bool(request.POST['main_pg'])
                 
                 if 'image' in request.FILES:
                     existing_show = db['shows'].find_one({"_id": ObjectId(id)})
@@ -140,7 +151,8 @@ def update_show(request):
                     "date": date,
                     "city": city,
                     "time": time,
-                    "image": new_filename
+                    "image": new_filename,
+                    "main_pg": main_pg
                     }
                     result = db['shows'].update_one({"_id": ObjectId(id)}, {"$set": data})
                     if result:
@@ -160,12 +172,13 @@ def update_show(request):
 @csrf_exempt
 def create_show(request):
     if request.method == 'POST':
-        if all(field in request.POST for field in ['title', 'description', 'date', 'city', 'time']):
+        if all(field in request.POST for field in ['title', 'description', 'date', 'city', 'time', 'main_pg']):
             title = request.POST['title']
             description = request.POST['description']
             date = request.POST['date']
             city = request.POST['city']
             time = request.POST['time']
+            main_pg = request.POST['main_pg']
 
             if 'image' in request.FILES:
                 uploaded_image = request.FILES['image']
@@ -186,7 +199,8 @@ def create_show(request):
                     "date": date,
                     "city": city,
                     "time": time,
-                    "image": new_filename
+                    "image": new_filename,
+                    "main_pg": bool(new_filename)
                 }
 
                 result = db['shows'].insert_one(data)
@@ -216,7 +230,8 @@ def shows_data(request):
                     'date': show['date'],
                     'city':show['city'],
                     'time': show['time'],
-                    'image_filename': show['image']
+                    'image_filename': show['image'],
+                    'main_pg': show['main_pg']
                 }
                 image_path = os.path.join('includes', 'shows', show['image'])
                 with open(image_path, 'rb') as image_file:

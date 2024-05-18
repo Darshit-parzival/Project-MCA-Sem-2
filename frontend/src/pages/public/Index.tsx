@@ -39,10 +39,10 @@ const Index = () => {
                 <div className="carousel-inner">
                   {showsData.map(
                     (show, index) =>
-                      localStorage.getItem("carousel") === show.title && (
+                      show.main_pg && (
                         <div
                           className={`carousel-item ${
-                            index !== -1 ? "active" : ""
+                            index === 0 ? "active" : ""
                           }`}
                           key={index}
                         >
@@ -77,6 +77,20 @@ const Index = () => {
                       )
                   )}
                 </div>
+                <button
+                  className="carousel-control-prev"
+                  type="button"
+                  data-bs-target="#carouselExampleControls"
+                  data-bs-slide="prev"
+                >
+                </button>
+                <button
+                  className="carousel-control-next"
+                  type="button"
+                  data-bs-target="#carouselExampleControls"
+                  data-bs-slide="next"
+                >
+                </button>
               </div>
             </div>
           </div>
