@@ -4,9 +4,10 @@ from django.views.decorators.csrf import csrf_exempt
 import json
 from bson import ObjectId, json_util
 import os
+import random
 from db_connect import db
 import base64
-import time
+from django.core.mail import send_mail
 
 @csrf_exempt
 def add_fan(request):
@@ -50,7 +51,14 @@ def admin_data(request):
     if request.method == 'POST':
         data = list(db['admin'].find()) 
         if data:
-            serialized_data = json_util.dumps(data, indent=4, default=str)
+            serialized_data = []
+            for admin in data:
+                admin_datas = {
+                    'id': str(admin['_id']),
+                    'name': admin['name'],
+                    'email': admin['email'],
+                }
+                serialized_data.append(admin_datas)
             return JsonResponse({'success': True, 'message': 'Data Retrieved', 'data': serialized_data})
         else:
             return JsonResponse({'success': False, 'message': 'Details are wrong!'})
@@ -67,6 +75,71 @@ def admin_add(request):
             return JsonResponse({'success': False, 'message':'admin Not Added'})
     else:
         return JsonResponse({'success': False, 'error': 'Only POST requests are allowed'})
+    
+@csrf_exempt
+def admin_generate_otp(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        email = data.get('email')
+        otp = random.randint(10000, 99999)
+        subject = "Password Updation"
+        message = "Your One Time Password(OTP) is " + str(otp)
+        print(email)
+        recipient_list = [email]
+        try:
+            if send_mail(
+                subject=subject,
+                message=message,
+                recipient_list=recipient_list,
+                from_email=None,
+                fail_silently=False
+            ):
+                print("sent")
+                return JsonResponse({'success': True, 'message': 'OTP sent successfully'})
+            else:
+                print("not")
+                return JsonResponse({'success': False, 'message': 'Failed to send OTP'})
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': str(e)})
+    else:
+        return JsonResponse({'success': False, 'error': 'Only POST requests are allowed'})
+
+
+@csrf_exempt
+def admin_verify_otp(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        id = data.get('id')
+        admin_otp = data.get('otp')
+        password = data.get('password')
+        try:
+            admin_data = db['admin'].find_one({"_id": ObjectId(id)})
+            if admin_data:
+                stored_otp = admin_data.get('otp')
+                if stored_otp == admin_otp:
+                    db['admin'].update_one({"_id": ObjectId(id)}, {"$set": {"password": password}})
+                    return JsonResponse({'success': True, 'message': 'Admin password updated successfully'})
+                else:
+                    return JsonResponse({'success': False, 'message': 'OTP not matched'})
+            else:
+                return JsonResponse({'success': False, 'message': 'Admin not found'})
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': str(e)})
+    else:
+        return JsonResponse({'success': False, 'error': 'Only POST requests are allowed'})
+  
+@csrf_exempt
+def admin_delete(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        id=data.get('id')
+        try:
+            if db['admin'].delete_one({'_id':ObjectId(id)}):
+                return JsonResponse({'success': True, 'message':'admin added successfully'})
+            else:
+                return JsonResponse({'success': False, 'message':'admin Not Added'})
+        except:
+            return JsonResponse({'success': False, 'error': 'Only POST requests are allowed'})
     
 @csrf_exempt
 def count_data(request):
@@ -109,65 +182,48 @@ def delete_show(request):
 @csrf_exempt
 def update_show(request):
     if request.method == 'POST':
-        if request.method == 'POST':
-            if all(field in request.POST for field in ['id','title', 'description', 'date', 'city', 'time', 'main_pg']):
-                id=request.POST['id']
-                title = request.POST['title']
-                description = request.POST['description']
-                date = request.POST['date']
-                city = request.POST['city']
-                time = request.POST['time']
-                main_pg = bool(request.POST['main_pg'])
-                
-                if 'image' in request.FILES:
-                    existing_show = db['shows'].find_one({"_id": ObjectId(id)})
-                    if existing_show:
-                        existing_image = existing_show.get('image', None)
-                        upload_directory = 'includes/shows/'
-                        image_path = os.path.join(upload_directory, existing_image)
-                        
-                        if os.path.exists(image_path):
-                            os.remove(image_path)
-                            print(f"Image {existing_image} deleted successfully")
-                        else:
-                            print(f"Image {existing_image} does not exist")
-                    else:
-                        return JsonResponse({'success': False, 'error': 'Document not found'})
-                    
-                    uploaded_image = request.FILES['image']
-                    
-                    timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
-                    file_extension = os.path.splitext(uploaded_image.name)[1]
-                    new_filename = f"{timestamp}_CCSHOW{file_extension}"
-                    upload_directory = 'includes/shows/'
-                    os.makedirs(upload_directory, exist_ok=True)
+        if 'id' in request.POST:
+            id = request.POST['id']
+            update_data = {}
+            print(id)
 
-                    with open(os.path.join(upload_directory, new_filename), 'wb+') as destination:
-                        for chunk in uploaded_image.chunks():
-                            destination.write(chunk)
-                    data = {
-                    "title": title,
-                    "description": description,
-                    "date": date,
-                    "city": city,
-                    "time": time,
-                    "image": new_filename,
-                    "main_pg": main_pg
-                    }
-                    result = db['shows'].update_one({"_id": ObjectId(id)}, {"$set": data})
-                    if result:
-                        return JsonResponse({'success': True, 'message': 'Show Updated successfully'})
-                    else:
-                        return JsonResponse({'success': False, 'message': 'Show not Updated successfully'})
-                else:
-                    return JsonResponse({'success': False, 'message': 'Modal Not Found'})
+            if 'title' in request.POST:
+                update_data['title'] = request.POST['title']
+            if 'description' in request.POST:
+                update_data['description'] = request.POST['description']
+            if 'date' in request.POST:
+                update_data['date'] = request.POST['date']
+            if 'city' in request.POST:
+                update_data['city'] = request.POST['city']
+            if 'time' in request.POST:
+                update_data['time'] = request.POST['time']
+            if 'main_pg' in request.POST:
+                update_data['main_pg'] = bool(request.POST['main_pg'])
+
+            if 'image' in request.FILES:
+                uploaded_image = request.FILES['image']
+                timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+                file_extension = os.path.splitext(uploaded_image.name)[1]
+                new_filename = f"{timestamp}_CCSHOW{file_extension}"
+                upload_directory = 'includes/shows/'
+                os.makedirs(upload_directory, exist_ok=True)
+
+                with open(os.path.join(upload_directory, new_filename), 'wb+') as destination:
+                    for chunk in uploaded_image.chunks():
+                        destination.write(chunk)
+
+                update_data['image'] = new_filename
+
+            result = db['shows'].update_one({"_id": ObjectId(id)}, {"$set": update_data})
+
+            if result:
+                return JsonResponse({'success': True, 'message': 'Show updated successfully'})
             else:
-                return JsonResponse({'success': False, 'message': 'Modal Not Found'})
+                return JsonResponse({'success': False, 'message': 'Failed to update show'})
         else:
-                return JsonResponse({'success': False, 'message': 'Not is Post'})
+            return JsonResponse({'success': False, 'message': 'Required field(s) missing'})
     else:
-        return JsonResponse({'success': False, 'error': 'Only POST requests are allowed'})
-
+        return JsonResponse({'success': False, 'message': 'Only POST requests are allowed'})
 
 @csrf_exempt
 def create_show(request):

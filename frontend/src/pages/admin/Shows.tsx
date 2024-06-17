@@ -23,9 +23,9 @@ const Shows = () => {
     fetchData();
   }, []);
 
-    const handleChange = () => {
-      setMainPg(!mainpg);
-    };
+  const handleChange = () => {
+    setMainPg(!mainpg);
+  };
 
   const updateShow = (show) => {
     setIsShowToUpdate(true);
@@ -51,13 +51,36 @@ const Shows = () => {
 
   const unsetHandle = () => {
     setSucMessage("");
-    setMessage("")
+    setMessage("");
     setTitle("");
     setDescription("");
     setDate("");
-    setTime("")
-    setCity("")
-    setMainPg(false)
+    setTime("");
+    setCity("");
+    setMainPg(false);
+  };
+
+  const handleMainPageAction = async (id,show) => {
+    try {
+      const isOnMainPage = localStorage.getItem("carousel") === show.title;
+      const response = await axios.post("http://127.0.0.1:8000/shows/update/", {
+        id: id,
+        main_pg: isOnMainPage
+      });
+      console.log("SHoew "+id);
+      
+      if (response.data.success) {
+        if (isOnMainPage) {
+          localStorage.removeItem("carousel");
+        } else {
+          localStorage.setItem("carousel", show.title);
+        }
+      } else {
+        console.error("Failed to update show:", response.data.message);
+      }
+    } catch (error) {
+      console.error("Failed to update show:", error);
+    }
   };
 
   const deleteShow = async (id: any) => {
@@ -185,7 +208,10 @@ const Shows = () => {
       <div className="row row-cols-2 g-3">
         {showsData.map((show, index) => (
           <div key={index} className="col w-auto">
-            <div className="card bg-dark text-white" style={{width:"fit-content"}}>
+            <div
+              className="card bg-dark text-white"
+              style={{ width: "fit-content" }}
+            >
               <img
                 src={`data:image/jpeg;base64, ${show.image_data}`}
                 className="card-img-top"
@@ -198,7 +224,12 @@ const Shows = () => {
                 <p>Date: {show.date}</p>
                 <p>Time: {show.time}</p>
                 <p>city: {show.city}</p>
-                <p>Set on Main Page: {show.main_pg?"Added to Main Page":"Not Added to Main Page"}</p>
+                <p>
+                  Set on Main Page:{" "}
+                  {show.main_pg
+                    ? "Added to Main Page"
+                    : "Not Added to Main Page"}
+                </p>
                 <Link
                   className="btn-card"
                   to=""
@@ -236,11 +267,11 @@ const Shows = () => {
                   <li>
                     <label
                       className="dropdown-item"
-                      onClick={() =>
-                        localStorage.setItem("carousel", show.title)
-                      }
+                      onClick={()=>(handleMainPageAction(show.id,show.title))}
                     >
-                      Add to Main Page
+                      {localStorage.getItem("carousel") === show.title
+                        ? "Remove from Main Page"
+                        : "Add to Main Page"}
                     </label>
                   </li>
                 </ul>
@@ -369,7 +400,8 @@ const Shows = () => {
                   >
                     {mainpg ? (
                       <span>
-                        Added to Main Page<FaCheckDouble />
+                        Added to Main Page
+                        <FaCheckDouble />
                       </span>
                     ) : (
                       <span>Set to Main Page</span>

@@ -99,7 +99,7 @@ const Index = () => {
                             Login
                           </button>
                         </div>
-                        <Link to="/signup" className="h6 ms-3 txt-color mb-4">
+                        <Link to="forgot" className="h6 ms-3 txt-color mb-4">
                           Short term Memory loss?(forgot password)
                         </Link>
                       </form>

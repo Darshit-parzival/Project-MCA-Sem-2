@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.urls import path
-from .views import add_fan, add_contact, update_show, delete_show, faq_data, add_faq, about_data, update_about, login_fan, login_admin, admin_data, admin_add, count_data, create_show, shows_data, comedian_data, add_comedian, location_data, add_location
+from .views import add_fan, admin_generate_otp, add_contact,admin_delete, admin_verify_otp, update_show, delete_show, faq_data, add_faq, about_data, update_about, login_fan, login_admin, admin_data, admin_add, count_data, create_show, shows_data, comedian_data, add_comedian, location_data, add_location
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -8,6 +8,9 @@ urlpatterns = [
     path('fans/login/', login_fan, name='login_fan'),
     path('manager/data/', admin_data, name='admin_data'),
     path('manager/add/', admin_add, name='admin_add'),
+    path('manager/delete/', admin_delete, name='admin_delete'),
+    path('manager/update/otp/', admin_generate_otp, name='admin_generate_otp'),
+    path('manager/update/password/', admin_verify_otp, name='admin_verify_otp'),
     path('manager/login/', login_admin, name='login_admin'),
     path('count/', count_data, name='count_data'),
     path('shows/create/', create_show, name='create_show'),

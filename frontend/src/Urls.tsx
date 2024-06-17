@@ -16,6 +16,7 @@ import Home from "./pages/admin/Home";
 import Logout from "./pages/includes/components/Logout";
 import Profile from "./pages/public/Profile";
 import Shows from "./pages/admin/Shows";
+import Forgot from "./pages/admin/Forgot";
 
 function Urls() {
   let name = "";
@@ -29,6 +30,7 @@ function Urls() {
     <>
       <Routes>
         {admin || <Route path="/admin" element={<Admin />} />}
+        <Route path="/admin/forgot" element={<Forgot />} />
         {admin && <Route path="/admin/home" element={<Home />} />}
         {admin && <Route path="/admin/shows" element={<Shows />} />}
 

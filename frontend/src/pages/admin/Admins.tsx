@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 
 const Admins = () => {
-  const [adminData,setAdminData] = useState([]);
+  const [adminData, setAdminData] = useState([]);
   const [rowsPerPage, setRowsPerPage] = useState(3);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -10,6 +10,11 @@ const Admins = () => {
   const [cpassword, setCPassword] = useState("");
   const [sucmessage, setSucMessage] = useState("");
   const [message, setMessage] = useState("");
+  const [otp, setOtp] = useState("");
+  const [otpMsg, setOtpMsg] = useState(null);
+  const [upassword, setUPassword] = useState("");
+  const [ucpassword, setUCPassword] = useState("");
+  const [showpass, setShowPass] = useState(false);
 
   useEffect(() => {
     fetchData();
@@ -19,26 +24,27 @@ const Admins = () => {
     try {
       const response = await axios.post("http://localhost:8000/manager/data/");
       if (response.data.success) {
-        const adminDataWithIds = response.data.data.map((item: { _id: any; }) => ({
-          ...item,
-          id: item._id
-        }));
-        setAdminData(adminDataWithIds);
+        setAdminData(response.data.data);
+      } else {
+        console.error("Data fetching failed:", response.data.message);
       }
     } catch (error) {
       console.error("Data fetching failed:", error);
     }
   };
 
-  const handleSubmit = async (e: { preventDefault: () => void; }) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       if (password === cpassword) {
-        const response = await axios.post("http://127.0.0.1:8000/manager/add/", {
-          name,
-          email,
-          password,
-        });
+        const response = await axios.post(
+          "http://127.0.0.1:8000/manager/add/",
+          {
+            name,
+            email,
+            password,
+          }
+        );
         if (response.data.success) {
           setSucMessage(response.data.message);
           fetchData();
@@ -49,13 +55,11 @@ const Admins = () => {
         } else {
           setMessage(response.data.message);
         }
-        console.log(adminData.id);
-        
       } else {
         setMessage("Password not same");
       }
     } catch (error) {
-      setMessage("Error adding fan");
+      setMessage("Error adding Admin");
     }
   };
 
@@ -66,13 +70,72 @@ const Admins = () => {
     setCPassword("");
     setSucMessage("");
     setMessage("");
+    setUCPassword("")
+    setUPassword("")
+    setOtp("")
   };
 
+  const HandleDelete = async (id) => {
+    try {
+      const response = await axios.post(
+        "http://127.0.0.1:8000/manager/delete/",
+        { id: id }
+      );
+      if (response.data.success) {
+        fetchData();
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const sendOTP = async (id, email) => {
+    try {
+      const response = await axios.post("http://127.0.0.1:8000/manager/update/otp/",
+      { id: id, email: email }
+    );
+    if (response.data.success) {
+      console.log("OTP sent successfully");
+      setOtpMsg("OTP sent successfully")
+      } else {
+        console.error("Failed to send OTP:", response.data.message);
+      }
+    } catch (error) {
+      console.error("Failed to send OTP:", error);
+    }
+  };
+
+  const HandleUpdatePassword = async (e) => {
+    e.preventDefault();
+    if (ucpassword === upassword) {
+      try {
+        const response = await axios.post(
+          "http://127.0.0.1:8000/manager/update/password/",
+          { id: curentAdmin[0], otp: otp, password: upassword, email: curentAdmin[1] }
+        );
+        if (response.data.success) {
+          console.log("Password updated successfully");
+          // Optionally, you can close the modal or show a success message here
+        } else {
+          console.error("Failed to update password:", response.data.message);
+        }
+      } catch (error) {
+        console.error("Failed to update password:", error);
+      }
+    } else {
+      setMessage("Password Not matched");
+    }
+  };
   const modalTitle = sucmessage
     ? { className: "txt-color-success", text: sucmessage }
     : message
     ? { className: "txt-color", text: message }
     : { className: "", text: "Add Admin" };
+  const modalTitle2 = sucmessage
+    ? { className: "txt-color-success", text: sucmessage }
+    : message && otpMsg
+    ? { className: "txt-color", text: message }
+    : { className: otpMsg ? "txt-color-success" : "", text: otpMsg || "OTP is on the way..." };
 
   return (
     <div>
@@ -115,8 +178,28 @@ const Admins = () => {
               <th scope="row">{index + 1}</th>
               <td>{admin.name}</td>
               <td>{admin.email}</td>
-              <td><button className="text-color">Delete</button></td>
-              <td><button className="text-color">Update Password</button></td>
+              <td>
+                <button
+                  className="text-color"
+                  onClick={() => HandleDelete(admin.id)}
+                >
+                  Delete
+                </button>
+              </td>
+              <td>
+                <button
+                  className="text-color"
+                  data-bs-toggle="modal"
+                  data-bs-target="#otp"
+                  onClick={() => {
+                    // setCurrentAdmin([admin.id, admin.email]);
+                    // console.log("Id "+admin.id);
+                    sendOTP(admin.id, admin.email)
+                  }}
+                >
+                  Update Password
+                </button>
+              </td>
             </tr>
           ))}
         </tbody>
@@ -132,7 +215,10 @@ const Admins = () => {
         <div className="modal-dialog">
           <div className="modal-content bg-dark">
             <div className="modal-header">
-              <h5 className={`modal-title ${modalTitle.className}`} id="exampleModalLabel">
+              <h5
+                className={`modal-title ${modalTitle.className}`}
+                id="exampleModalLabel"
+              >
                 {modalTitle.text}
               </h5>
               <button
@@ -191,6 +277,89 @@ const Admins = () => {
                 </button>
                 <button type="submit" id="submit" className="btn btn-primary">
                   Add Admin
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <div
+        className="modal fade text-white"
+        id="otp"
+        tabIndex={-1}
+        aria-labelledby="exampleModalLabel"
+        aria-hidden="true"
+      >
+        <div className="modal-dialog">
+          <div className="modal-content bg-dark">
+            <div className="modal-header">
+              <h5
+                className={`modal-title ${modalTitle2.className}`}
+                id="exampleModalLabel"
+              >
+                {modalTitle2.text}
+              </h5>
+              <button
+                type="button"
+                className="btn-close bg-light"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+                onClick={unsetHandle}
+              ></button>
+            </div>
+            <form method="post" onSubmit={HandleUpdatePassword}>
+              <input
+                type="number"
+                id="form3Example3cName"
+                className="form-control"
+                placeholder="Enter OTP"
+                value={otp}
+                onChange={(e) => setOtp(e.target.value)}
+              />
+              <label className="form-label">Enter OTP</label>
+              <input
+                type={showpass ? "text" : "password"}
+                id="form3Example3cName"
+                className="form-control"
+                placeholder="Enter Password"
+                value={upassword}
+                onChange={(e) => setUPassword(e.target.value)}
+              />
+              <label className="form-label">Enter Your New Password</label>
+              <input
+                type={showpass ? "text" : "password"}
+                id="form3Example3cName"
+                className="form-control"
+                placeholder="Enter Password Again"
+                value={ucpassword}
+                onChange={(e) => setUCPassword(e.target.value)}
+              />
+              <label className="form-label">Verify Your New Password</label>
+              <div>
+                <input
+                  type="checkbox"
+                  className="btn-check"
+                  id="btncheck1"
+                  autoComplete="off"
+                  checked={showpass}
+                  onChange={() => setShowPass(prevState => !prevState)}
+                />
+                <label className="btn btn-outline-primary" htmlFor="btncheck1">
+                  <span>Show Password</span>
+                </label>
+              </div>
+              <div className="modal-footer">
+                <button
+                  type="button"
+                  className="btn btn-secondary"
+                  data-bs-dismiss="modal"
+                  onClick={unsetHandle}
+                >
+                  Close
+                </button>
+                <button type="submit" id="submit" className="btn btn-primary">
+                  Verify OtP
                 </button>
               </div>
             </form>
