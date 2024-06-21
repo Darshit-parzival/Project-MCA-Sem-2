@@ -1,6 +1,6 @@
 import logo from "../includes/assets/img/logo.png";
 import "../includes/assets/css/adminDashboard.css";
-import { FaCalendar, FaHome, FaPen, FaQuestion } from "react-icons/fa";
+import { FaAmilia, FaCalendar, FaEnvelope, FaHome, FaPen, FaQuestion, FaUsers } from "react-icons/fa";
 import { SetStateAction, useState } from "react";
 import { Link } from "react-router-dom";
 import Shows from "./Shows";
@@ -11,6 +11,8 @@ import { FaLocationPin, FaPeopleGroup, FaPerson } from "react-icons/fa6";
 import Locations from "./Locations";
 import AboutAdmin from "./AboutAdmin";
 import Faq from "./Faq";
+import Fans from "./Fans";
+import Contact from "./Contact";
 
 const Home = () => {
   const [activeNavItem, setActiveNavItem] = useState("dashboard");
@@ -20,6 +22,8 @@ const Home = () => {
   const [locations, SetLocations] = useState(false);
   const [about, SetAbout] = useState(false);
   const [faq, SetFaq] = useState(false);
+  const [fans, SetFans] = useState(false);
+  const [contact, SetContact] = useState(false);
 
   const admin = sessionStorage.getItem("admin");
 
@@ -36,6 +40,8 @@ const Home = () => {
     SetLocations(navItem === "locations");
     SetAbout(navItem === "about");
     SetFaq(navItem === "faq");
+    SetFans(navItem === "fans");
+    SetContact(navItem === "contact");
   };
 
   return (
@@ -131,6 +137,24 @@ const Home = () => {
                     Frequently Asked Questions?
                   </label>
                 </li>
+                <li className="nav-item">
+                  <label
+                    className={`nav-link text-white ${activeNavItem === "comedians" ? "active" : ""}`}
+                    onClick={() => handleNavClick("fans")}
+                  >
+                    <FaUsers className="me-1 mb-1" />
+                    Fans
+                  </label>
+                </li>
+                <li className="nav-item">
+                  <label
+                    className={`nav-link text-white ${activeNavItem === "comedians" ? "active" : ""}`}
+                    onClick={() => handleNavClick("contact")}
+                  >
+                    <FaEnvelope className="me-1 mb-1" />
+                    Contact
+                  </label>
+                </li>
               </ul>
             </div>
           </nav>
@@ -142,6 +166,8 @@ const Home = () => {
             {locations && <Locations />}
             {about && <AboutAdmin />}
             {faq && <Faq />}
+            {fans && <Fans />}
+            {contact && <Contact />}
           </div>
         </div>
       </div>

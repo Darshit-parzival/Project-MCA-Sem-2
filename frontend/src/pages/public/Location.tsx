@@ -7,20 +7,18 @@ import axios from "axios";
 const Location = () => {
   const [rowsPerPage, setRowsPerPage] = useState(3);
   const [locationData, setLocationData] = useState([]);
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.post(
-          "http://localhost:8000/location/data/"
-        );
-        if (response.data.success) {
-          setLocationData(JSON.parse(response.data.data));
-        }
-      } catch (error) {
-        console.error("Data fetching failed:", error);
+  const fetchData = async () => {
+    try {
+      const response = await axios.post("http://localhost:8000/location/data/");
+      if (response.data.success) {
+        setLocationData(response.data.data);
       }
-    };
+    } catch (error) {
+      console.error("Data fetching failed:", error);
+    }
+  };
 
+  useEffect(() => {
     fetchData();
   }, []);
   return (
@@ -39,18 +37,18 @@ const Location = () => {
               className="description-box p-4 mt-5 mb-5"
               style={{ backgroundColor: "rgb(17,17,17)", marginTop: "10px" }}
             >
-                <label className="me-2" htmlFor="rowsPerPage">
-                  Rows per page:
-                </label>
-                <select
-                  id="rowsPerPage"
-                  value={rowsPerPage}
-                  onChange={(e) => setRowsPerPage(parseInt(e.target.value))}
-                >
-                  <option value={3}>3</option>
-                  <option value={10}>10</option>
-                  <option value={20}>20</option>
-                </select>
+              <label className="me-2" htmlFor="rowsPerPage">
+                Rows per page:
+              </label>
+              <select
+                id="rowsPerPage"
+                value={rowsPerPage}
+                onChange={(e) => setRowsPerPage(parseInt(e.target.value))}
+              >
+                <option value={3}>3</option>
+                <option value={10}>10</option>
+                <option value={20}>20</option>
+              </select>
               <div className="container d-flex justify-content-center">
                 <table className="table text-white">
                   <thead>

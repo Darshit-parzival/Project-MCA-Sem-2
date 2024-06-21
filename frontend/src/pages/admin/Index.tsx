@@ -1,31 +1,36 @@
 import axios from "axios";
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import logo from "../includes/assets/img/adminlogin.png"
+import logo from "../includes/assets/img/adminlogin.png";
 
 const Index = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [err,setErr]=useState("")
+  const [err, setErr] = useState("");
+  const [showpass, setShowPass] = useState(false);
+
+  const togglePasswordVisibility = () => {
+    setShowPass((prevShowPass) => !prevShowPass);
+  };
 
   const handleLogin = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
     try {
-      const response = await axios.post("http://localhost:8000/manager/login/", {
-        email,
-        password,
-      });
+      const response = await axios.post(
+        "http://localhost:8000/manager/login/",
+        {
+          email,
+          password,
+        }
+      );
       if (response.data.success) {
         console.log(response.data);
-        sessionStorage.setItem("admin",response.data.name)
-        window.location.href="/admin/home"
+        sessionStorage.setItem("admin", response.data.name);
+        window.location.href = "/admin/home";
+      } else {
+        setErr(response.data.message);
       }
-      else{
-        setErr(response.data.message)
-      }
-    } catch (error) {
-      
-    }
+    } catch (error) {}
   };
   return (
     <div>
@@ -64,7 +69,9 @@ const Index = () => {
                             <input
                               type="email"
                               value={email}
-                              onChange={(e) => setEmail(e.target.value.toLowerCase())}
+                              onChange={(e) =>
+                                setEmail(e.target.value.toLowerCase())
+                              }
                               id="form3Example3c"
                               className="form-control"
                             />
@@ -78,7 +85,7 @@ const Index = () => {
                             className="form-outline flex-fill mb-0"
                           >
                             <input
-                              type="password"
+                              type={showpass ? "text" : "password"}
                               id="form3Example4c"
                               value={password}
                               onChange={(e) => setPassword(e.target.value)}
@@ -87,7 +94,22 @@ const Index = () => {
                             <label className="form-label">Password</label>
                           </div>
                         </div>
-
+                        <div>
+                          <input
+                            type="checkbox"
+                            className="btn-check"
+                            id="btncheck1"
+                            autoComplete="off"
+                            checked={showpass}
+                            onChange={togglePasswordVisibility}
+                          />
+                          <label
+                            className="btn btn-outline-primary"
+                            htmlFor="btncheck1"
+                          >
+                            <span>Show Password</span>
+                          </label>
+                        </div>
                         <div className="d-flex justify-content-left mx-4 mb-2">
                           <button
                             type="submit"
@@ -105,10 +127,10 @@ const Index = () => {
                       </form>
                     </div>
                     <div className="col-md-10 col-lg-6 col-xl-7 d-flex align-items-center order-1 order-lg-2">
-                     <img
+                      <img
                         src={logo}
                         className="me-3 img-fluid"
-                        style={{ height: "auto",width:"50%" }}
+                        style={{ height: "auto", width: "50%" }}
                         alt="Sample image"
                       />
                     </div>

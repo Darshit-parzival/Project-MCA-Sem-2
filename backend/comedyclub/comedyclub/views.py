@@ -32,6 +32,87 @@ def login_fan(request):
             
     else:
         return JsonResponse({'success': False, 'error': 'Only POST requests are allowed'})
+
+@csrf_exempt
+def fan_data(request):
+    if request.method == 'POST':
+        data = list(db['fans'].find()) 
+        if data:
+            serialized_data = []
+            for fans in data:
+                fans_data = {
+                    'id': str(fans['_id']),
+                    'name': fans['name'],
+                    'email': fans['email'],
+                }
+                serialized_data.append(fans_data)
+            return JsonResponse({'success': True, 'message': 'Data Retrieved', 'data': serialized_data})
+        else:
+            return JsonResponse({'success': False, 'message': 'Details are wrong!'})
+    else:
+        return JsonResponse({'success': False, 'error': 'Only POST requests are allowed'})
+    
+@csrf_exempt
+def fan_delete(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        id=data.get('id')
+        try:
+            if db['fans'].delete_one({'_id':ObjectId(id)}):
+                return JsonResponse({'success': True, 'message':'Fans Deleted successfully'})
+            else:
+                return JsonResponse({'success': False, 'message':'Fans Not Found'})
+        except:
+            return JsonResponse({'success': False, 'error': 'Only POST requests are allowed'})
+        
+@csrf_exempt
+def fans_generate_otp(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        email = data.get('email')
+        otp = random.randint(10000, 99999)
+        subject = "Password Updation"
+        message = "Your One Time Password(OTP) is " + str(otp)
+        print(email)
+        recipient_list = [email]
+        try:
+            fan_record = db['fans'].find_one({"email": email})
+            if fan_record:
+                fan_id = fan_record['_id']
+                if send_mail(
+                    subject=subject,
+                    message=message,
+                    recipient_list=recipient_list,
+                    from_email=None,
+                    fail_silently=False
+                ):
+                    print("sent")
+                    return JsonResponse({'success': True, 'message': 'OTP sent successfully', 'otp': otp , 'id':str(fan_id)})
+                else:
+                    print("not")
+                    return JsonResponse({'success': False, 'message': 'Failed to send OTP'})
+            else:
+                return JsonResponse({'success': False, 'message': 'Email not found'})
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': str(e)})
+    else:
+        return JsonResponse({'success': False, 'error': 'Only POST requests are allowed'})
+    
+@csrf_exempt
+def fans_update_password(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        id = data.get('id')
+        password = data.get('password')
+        try:
+            fans_data = db['fans'].find_one({"_id": ObjectId(id)})
+            if fans_data:
+                db['fans'].update_one({"_id": ObjectId(id)}, {"$set": {"password": password}})
+                return JsonResponse({'success': True, 'message': 'Round two for the fans password update. Yippee.'})
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': str(e)})
+    else:
+        return JsonResponse({'success': False, 'error': 'Only POST requests are allowed'})
     
 @csrf_exempt
 def login_admin(request):
@@ -87,42 +168,39 @@ def admin_generate_otp(request):
         print(email)
         recipient_list = [email]
         try:
-            if send_mail(
-                subject=subject,
-                message=message,
-                recipient_list=recipient_list,
-                from_email=None,
-                fail_silently=False
-            ):
-                print("sent")
-                return JsonResponse({'success': True, 'message': 'OTP sent successfully'})
+            admin_record = db['admin'].find_one({"email": email})
+            if admin_record:
+                admin_id = admin_record['_id']
+                if send_mail(
+                    subject=subject,
+                    message=message,
+                    recipient_list=recipient_list,
+                    from_email=None,
+                    fail_silently=False
+                ):
+                    print("sent")
+                    return JsonResponse({'success': True, 'message': 'OTP sent successfully', 'otp': otp , 'id':str(admin_id)})
+                else:
+                    print("not")
+                    return JsonResponse({'success': False, 'message': 'Failed to send OTP'})
             else:
-                print("not")
-                return JsonResponse({'success': False, 'message': 'Failed to send OTP'})
+                return JsonResponse({'success': False, 'message': 'Email not found'})
         except Exception as e:
             return JsonResponse({'success': False, 'error': str(e)})
     else:
         return JsonResponse({'success': False, 'error': 'Only POST requests are allowed'})
 
-
 @csrf_exempt
-def admin_verify_otp(request):
+def admin_update_password(request):
     if request.method == 'POST':
         data = json.loads(request.body)
         id = data.get('id')
-        admin_otp = data.get('otp')
         password = data.get('password')
         try:
             admin_data = db['admin'].find_one({"_id": ObjectId(id)})
             if admin_data:
-                stored_otp = admin_data.get('otp')
-                if stored_otp == admin_otp:
-                    db['admin'].update_one({"_id": ObjectId(id)}, {"$set": {"password": password}})
-                    return JsonResponse({'success': True, 'message': 'Admin password updated successfully'})
-                else:
-                    return JsonResponse({'success': False, 'message': 'OTP not matched'})
-            else:
-                return JsonResponse({'success': False, 'message': 'Admin not found'})
+                db['admin'].update_one({"_id": ObjectId(id)}, {"$set": {"password": password}})
+                return JsonResponse({'success': True, 'message': 'Round two for the admin password update. Yippee.'})
         except Exception as e:
             return JsonResponse({'success': False, 'error': str(e)})
     else:
@@ -345,17 +423,18 @@ def comedian_data(request):
         data = list(db['comedians'].find()) 
         if data:
             serialized_data = []
-            for show in data:
-                show_data = {
-                    'name': show['name'],
-                    'description': show['description'],
-                    'image_filename': show['image']
+            for comedian in data:
+                comedian_data = {
+                    'id': str(comedian['_id']),
+                    'name': comedian['name'],
+                    'description': comedian['description'],
+                    'image_filename': comedian['image']
                 }
-                image_path = os.path.join('includes', 'comedians', show['image'])
+                image_path = os.path.join('includes', 'comedians', comedian['image'])
                 with open(image_path, 'rb') as image_file:
                     image_data = base64.b64encode(image_file.read()).decode('utf-8')
-                show_data['image_data'] = image_data
-                serialized_data.append(show_data)
+                comedian_data['image_data'] = image_data
+                serialized_data.append(comedian_data)
             return JsonResponse({'success': True, 'message': 'Data Retrieved', 'data': serialized_data})
         else:
             return JsonResponse({'success': False, 'message': 'Details are wrong!'})
@@ -363,11 +442,57 @@ def comedian_data(request):
         return JsonResponse({'success': False, 'error': 'Only POST requests are allowed'})
     
 @csrf_exempt
+def comedian_update(request):
+    if request.method == 'POST':
+        if 'id' in request.POST:
+            id = request.POST['id']
+            update_data = {}
+
+            if 'name' in request.POST:
+                update_data['name'] = request.POST['name']
+            if 'description' in request.POST:
+                update_data['description'] = request.POST['description']
+
+            if 'image' in request.FILES:
+                uploaded_image = request.FILES['image']
+                timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+                file_extension = os.path.splitext(uploaded_image.name)[1]
+                new_filename = f"{timestamp}_CCCOMEDIAN{file_extension}"
+                upload_directory = 'includes/comedians/'
+                os.makedirs(upload_directory, exist_ok=True)
+
+                with open(os.path.join(upload_directory, new_filename), 'wb+') as destination:
+                    for chunk in uploaded_image.chunks():
+                        destination.write(chunk)
+
+                update_data['image'] = new_filename
+
+            result = db['comedians'].update_one({"_id": ObjectId(id)}, {"$set": update_data})
+
+            if result.modified_count > 0:
+                return JsonResponse({'success': True, 'message': 'Comedian updated successfully'})
+            else:
+                return JsonResponse({'success': False, 'message': 'Failed to update comedian'})
+
+        else:
+            return JsonResponse({'success': False, 'message': 'Required field "id" missing'})
+
+    else:
+        return JsonResponse({'success': False, 'message': 'Only POST requests are allowed'})
+    
+@csrf_exempt
 def location_data(request):
     if request.method == 'POST':
         data = list(db['locations'].find()) 
         if data:
-            serialized_data = json_util.dumps(data)
+            serialized_data = []
+            for locations in data:
+                locations_data = {
+                    'id': str(locations['_id']),
+                    'city': locations['city'],
+                    'address': locations['address'],
+                }
+                serialized_data.append(locations_data)
             return JsonResponse({'success': True, 'message': 'Data Retrieved', 'data': serialized_data})
         else:
             return JsonResponse({'success': False, 'message': 'Details are wrong!'})
@@ -386,12 +511,43 @@ def add_location(request):
         return JsonResponse({'success': False, 'error': 'Only POST requests are allowed'})
     
 @csrf_exempt
+def location_delete(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        id=data.get('id')
+        try:
+            if db['locations'].delete_one({'_id':ObjectId(id)}):
+                return JsonResponse({'success': True, 'message':'location deleted successfully'})
+            else:
+                return JsonResponse({'success': False, 'message':'location Not deleted'})
+        except:
+            return JsonResponse({'success': False, 'error': 'Only POST requests are allowed'})
+
+@csrf_exempt
+def location_update(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        id = data.get('id')
+        city = data.get('city')
+        address = data.get('address')
+        try:
+            location_data = db['locations'].find_one({"_id": ObjectId(id)})
+            if location_data:
+                db['locations'].update_one({"_id": ObjectId(id)}, {"$set": {"city": city , "address": address}})
+                return JsonResponse({'success': True, 'message': 'Location has been updated'})
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': str(e)})
+    else:
+        return JsonResponse({'success': False, 'error': 'Only POST requests are allowed'})
+    
+@csrf_exempt
 def about_data(request):
     if request.method == 'POST':
         data = list(db['about'].find()) 
         if data:
             about_value = data[0]['about']
-            return JsonResponse({'success': True, 'message': 'Data Retrieved', 'about': about_value})
+            about_yt = data[0]['ytLink']
+            return JsonResponse({'success': True, 'message': 'Data Retrieved', 'about': about_value, 'about_yt':about_yt})
         else:
             return JsonResponse({'success': False, 'message': 'Details are wrong!'})
     else:
@@ -403,12 +559,13 @@ def update_about(request):
         data = json.loads(request.body)
         
         new_about = data.get('about')
+        new_link = data.get('ytLink')
         
         if not new_about:
             return JsonResponse({'success': False, 'message': 'No data provided to update'})
         
         try:
-            result = db['about'].update_one({}, {'$set': {'about': new_about}})
+            result = db['about'].update_one({}, {'$set': {'about': new_about, 'ytLink': new_link}})
             
             if result.modified_count > 0:
                 return JsonResponse({'success': True, 'message': 'About updated successfully'})
@@ -451,5 +608,68 @@ def add_contact(request):
             return JsonResponse({'success': True, 'message':'Your Message has reached us!'})
         else:
             return JsonResponse({'success': False, 'message':'Not Contacted'})
+    else:
+        return JsonResponse({'success': False, 'error': 'Only POST requests are allowed'})
+    
+@csrf_exempt
+def contact_data(request):
+    if request.method == 'POST':
+        data = list(db['contact'].find()) 
+        if data:
+            serialized_data = []
+            for contact in data:
+                contact_data = {
+                    'id': str(contact['_id']),
+                    'name': contact['name'],
+                    'email': contact['email'],
+                    'msg': contact['msg'],
+                    'replied': contact['replied']
+                }
+                serialized_data.append(contact_data)
+            return JsonResponse({'success': True, 'message': 'Data Retrieved', 'data': serialized_data})
+        else:
+            return JsonResponse({'success': False, 'message': 'Details are wrong!'})
+    else:
+        return JsonResponse({'success': False, 'error': 'Only POST requests are allowed'})
+    
+@csrf_exempt
+def contact_delete(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        id=data.get('id')
+        try:
+            if db['contact'].delete_one({'_id':ObjectId(id)}):
+                return JsonResponse({'success': True, 'message':'contact deleted successfully'})
+            else:
+                return JsonResponse({'success': False, 'message':'contact Not deleted'})
+        except:
+            return JsonResponse({'success': False, 'error': 'Only POST requests are allowed'})
+        
+@csrf_exempt
+def contact_reply(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        id=data.get('id')
+        email = data.get('email')
+        subject = "Replying from Comedy Club"
+        message = data.get('message')
+        print(email)
+        recipient_list = [email]
+        try:
+            if send_mail(
+                subject=subject,
+                message=message,
+                recipient_list=recipient_list,
+                from_email=None,
+                fail_silently=False
+            ):
+                db['contact'].update_one({"_id": ObjectId(id)}, {"$set": {"replied": True}})
+                print("sent")
+                return JsonResponse({'success': True, 'message': 'replied sent successfully'})
+            else:
+                print("not")
+                return JsonResponse({'success': False, 'message': 'replied not sent successfully'})
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': str(e)})
     else:
         return JsonResponse({'success': False, 'error': 'Only POST requests are allowed'})

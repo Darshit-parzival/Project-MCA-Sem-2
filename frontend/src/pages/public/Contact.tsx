@@ -23,6 +23,7 @@ const Contact = () => {
       });
       if (response.data.success) {
         setSucMessage(response.data.message);
+        setName("")
         setEmail("");
         setMsg("");
       } else {
@@ -70,7 +71,7 @@ const Contact = () => {
           <div className="row" style={{ width: "35%" }}>
             <div className="col p-5">
               <h3 className="txt-color">Contact Form</h3>
-              {sucmessage && <h3 className="txt-color-sucsess">{sucmessage}</h3>}
+              {sucmessage && <h3 className="txt-color-success">{sucmessage}</h3>}
               {message && <h3 className="txt-color">{message}</h3>}
               <label>
                 For information about shows or any questions please use the

@@ -1,5 +1,4 @@
 import { Link } from "react-router-dom";
-import Img1 from "../includes/assets/img/Img1.jpg";
 import "../includes/assets/css/Index.css";
 import Header from "../includes/components/Header";
 import { FaFacebook, FaYoutube, FaInstagram } from "react-icons/fa";
@@ -9,20 +8,34 @@ import { useEffect, useState } from "react";
 
 const Index = () => {
   const [showsData, setShowsData] = useState([]);
+  const [locationData, setLocationData] = useState([]);
+  const [currentCity, setCurrentCity] = useState("");
+
+  const fetchData = async () => {
+    try {
+      const response = await axios.post("http://localhost:8000/shows/data/");
+      if (response.data.success) {
+        setShowsData(response.data.data);
+      }
+    } catch (error) {
+      console.error("Data fetching failed:", error);
+    }
+  };
+
+  const fetchLocationData = async () => {
+    try {
+      const response = await axios.post("http://localhost:8000/location/data/");
+      if (response.data.success) {
+        setLocationData(response.data.data);
+      }
+    } catch (error) {
+      console.error("Data fetching failed:", error);
+    }
+  };
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.post("http://localhost:8000/shows/data/");
-        if (response.data.success) {
-          setShowsData(response.data.data);
-        }
-      } catch (error) {
-        console.error("Data fetching failed:", error);
-      }
-    };
-
     fetchData();
+    fetchLocationData();
   }, []);
   return (
     <>
@@ -82,15 +95,13 @@ const Index = () => {
                   type="button"
                   data-bs-target="#carouselExampleControls"
                   data-bs-slide="prev"
-                >
-                </button>
+                ></button>
                 <button
                   className="carousel-control-next"
                   type="button"
                   data-bs-target="#carouselExampleControls"
                   data-bs-slide="next"
-                >
-                </button>
+                ></button>
               </div>
             </div>
           </div>
@@ -141,47 +152,48 @@ const Index = () => {
       </div>
       <div className="text-center">
         <p className="title">Upcoming Shows</p>
-        <ul className="show-list">
-          <li>
-            <a href="" className="btn">
-              ALL
-            </a>
-          </li>
-          <li>
-            <a href="" className="btn">
-              junagadh
-            </a>
-          </li>
-          <li>
-            <a href="" className="btn">
-              global
-            </a>
-          </li>
-        </ul>
+        <div className="flex-container">
+          {locationData.map((location, index) => (
+            <button
+              key={index}
+              onClick={() => setCurrentCity(location.city)}
+              className="btn me-2"
+            >
+              {location.city}
+            </button>
+          ))}
+        </div>
       </div>
+
       <div className="d-flex justify-content-center">
-        {showsData.map((card, index) => (
-          <div
-            className="card card-custom"
-            style={{ width: "18rem" }}
-            key={index}
-          >
-            <img
-              src={`data:image/jpeg;base64, ${card.image_data}`}
-              className="card-img-top"
-              alt={card.title}
-            />
-            <div className="card-body">
-              <h5 className="card-title">{card.title}</h5>
-              <p className="card-text">{card.description}</p>
-            </div>
-            <div className="card-body">
-              <button type="submit" className="btn-card">
-                Book Show
-              </button>
-            </div>
-          </div>
-        ))}
+        {showsData.map((card, index) => {
+          if (currentCity === "" || card.city === currentCity) {
+            return (
+              <div
+                className="card card-custom"
+                style={{ width: "18rem" }}
+                key={index}
+              >
+                <img
+                  src={`data:image/jpeg;base64, ${card.image_data}`}
+                  className="card-img-top"
+                  alt={card.title}
+                />
+                <div className="card-body">
+                  <h5 className="card-title">{card.title}</h5>
+                  <p className="card-text">{card.description}</p>
+                </div>
+                <div className="card-body">
+                  <button type="submit" className="btn-card">
+                    Book Show
+                  </button>
+                </div>
+              </div>
+            );
+          } else {
+            return null; // Render nothing if the show's city doesn't match currentCity
+          }
+        })}
       </div>
       <Footer />
     </>

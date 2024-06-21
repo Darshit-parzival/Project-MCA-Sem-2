@@ -330,7 +330,6 @@ const Shows = () => {
                   placeholder="Enter Title"
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
-                  required
                 />
                 <label className="form-label">Enter Show Title</label>
                 <textarea
@@ -339,7 +338,6 @@ const Shows = () => {
                   placeholder="Enter Description"
                   value={description}
                   onChange={(e) => setDescription(e.target.value.toLowerCase())}
-                  required
                 ></textarea>
                 <label className="form-label">Enter Description of Show</label>
                 <input
@@ -350,7 +348,6 @@ const Shows = () => {
                   placeholder="Enter Date"
                   value={date}
                   onChange={(e) => setDate(e.target.value)}
-                  required
                 />
                 <label className="form-label">Enter Date of the show</label>
                 <input
@@ -360,7 +357,6 @@ const Shows = () => {
                   placeholder="Enter Time"
                   value={time}
                   onChange={(e) => setTime(e.target.value)}
-                  required
                 />
                 <label className="form-label">Enter Time of show</label>
                 <input
@@ -370,7 +366,6 @@ const Shows = () => {
                   placeholder="Enter City"
                   value={city}
                   onChange={(e) => setCity(e.target.value)}
-                  required
                 />
                 <label className="form-label">
                   In which city show is hosted
@@ -380,7 +375,6 @@ const Shows = () => {
                   id="imageUpload"
                   className="form-control"
                   accept="image/jpeg, image/jpg"
-                  required
                 />
                 <label className="form-label">
                   Upload Poster of show (preferred square)

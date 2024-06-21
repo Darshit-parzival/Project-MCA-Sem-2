@@ -95,9 +95,6 @@ const Dashboard = () => {
             </div>
           </div>
         </div>
-        <label>
-          Show States
-        </label>
       </div>
     </div>
   );

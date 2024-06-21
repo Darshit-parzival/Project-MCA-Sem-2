@@ -17,6 +17,8 @@ import Logout from "./pages/includes/components/Logout";
 import Profile from "./pages/public/Profile";
 import Shows from "./pages/admin/Shows";
 import Forgot from "./pages/admin/Forgot";
+import ForgotFan from "./pages/public/Forgot";
+import BookShow from "./pages/public/BookShow";
 
 function Urls() {
   let name = "";
@@ -36,10 +38,12 @@ function Urls() {
 
         {name || <Route path="/signup" element={<Signup />} />}
         {name || <Route path="/login" element={<Login />} />}
+        {name || <Route path="/forgot" element={<ForgotFan />} />}
         {name && <Route path="/logout" element={<Logout />} />}
         {name && <Route path="/profile" element={<Profile />} />}
 
         <Route path="/faq" element={<Faq />} />
+        <Route path="/book" element={<BookShow />} />
         <Route path="/location/ahmedabad" element={<AdiMoreInfo />} />
         <Route path="/location/rajkot" element={<RktMoreInfo />} />
         <Route path="/location/junagadh" element={<JndMoreInfo />} />

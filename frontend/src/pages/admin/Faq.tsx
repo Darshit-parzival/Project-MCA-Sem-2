@@ -5,18 +5,18 @@ const Faq = () => {
   const [faqData, setFaqData] = useState([]);
   const [rowsPerPage, setRowsPerPage] = useState(3);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.post("http://localhost:8000/faq/data/");
-        if (response.data.success) {
-          setFaqData(JSON.parse(response.data.data));
-        }
-      } catch (error) {
-        console.error("Data fetching failed:", error);
+  const fetchData = async () => {
+    try {
+      const response = await axios.post("http://localhost:8000/faq/data/");
+      if (response.data.success) {
+        setFaqData(JSON.parse(response.data.data));
       }
-    };
+    } catch (error) {
+      console.error("Data fetching failed:", error);
+    }
+  };
 
+  useEffect(() => {
     fetchData();
   }, []);
 

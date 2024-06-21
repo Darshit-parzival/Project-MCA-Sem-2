@@ -6,6 +6,7 @@ import axios from "axios";
 
 const About = () => {
   const [aboutData, setAboutData] = useState("");
+  const [ytLink, setYtLink] = useState("");
   useEffect(() => {
     fetchData();
   }, []);
@@ -13,14 +14,15 @@ const About = () => {
   const fetchData = async () => {
     try {
       const response = await axios.post("http://127.0.0.1:8000/about/data/");
-      console.log("Response from API:", response.data.about);
       if (response.data.success) {
         setAboutData(response.data.about);
+        setYtLink(response.data.about_yt);
       }
     } catch (error) {
       console.error("Data fetching failed:", error);
     }
   };
+  
   return (
     <div>
       <Header />
@@ -50,7 +52,7 @@ const About = () => {
           <div className="col-8">
             <div className="video-container text-center">
               <iframe
-                src="https://www.youtube.com/embed/_GaeKNLTMeA?si=wINvW2nfpXZ27Fh8&amp;start=60"
+                src={ytLink}
                 width="560"
                 height="315"
                 allowFullScreen

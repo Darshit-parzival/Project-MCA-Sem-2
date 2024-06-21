@@ -22,7 +22,7 @@ const Forgot = () => {
     e.preventDefault();
     try {
       const response = await axios.post(
-        "http://127.0.0.1:8000/manager/update/otp/",
+        "http://127.0.0.1:8000/fans/update/otp/",
         {
           email: email,
         }
@@ -61,7 +61,7 @@ console.log(id);
       if (password === cpassword) {
         console.log("Updating password...");
         const response = await axios.post(
-          "http://127.0.0.1:8000/manager/update/password/",
+          "http://127.0.0.1:8000/fans/update/password/",
           {
             id: id,
             password: password,
@@ -100,7 +100,7 @@ console.log(id);
                   <div className="row justify-content-center w-auto">
                     <div className="col-md-10 col-lg-6 col-xl-5 order-2 order-lg-1">
                       <p className="text-center h2 fw-bold mb-5 mx-1 mx-md-4 mt-4">
-                        Admin Password Updation
+                        Fan Password Updation
                       </p>
 
                       {!otpVerified &&
@@ -156,7 +156,7 @@ console.log(id);
                               Send Otp
                             </button>
                           </div>
-                          <Link to="/admin" className="h6 ms-3 txt-color mb-4">
+                          <Link to="/login" className="h6 ms-3 txt-color mb-4">
                             Back to door
                           </Link>
                         </form>
@@ -265,7 +265,7 @@ console.log(id);
                               Update Password
                             </button>
                           </div>
-                          <Link to="/admin" className="h6 ms-3 txt-color mb-4">
+                          <Link to="/login" className="h6 ms-3 txt-color mb-4">
                             Back to door
                           </Link>
                         </form>

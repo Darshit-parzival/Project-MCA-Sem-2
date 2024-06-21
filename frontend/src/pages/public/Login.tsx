@@ -2,14 +2,14 @@ import { Link } from "react-router-dom";
 import Footer from "../includes/components/Footer";
 import Header from "../includes/components/Header";
 import Img from "../includes/assets/img/Login.jpg";
-import Noentry from "../includes/assets/img/no_entry.gif"
+import Noentry from "../includes/assets/img/no_entry.gif";
 import axios from "axios";
 import { useState } from "react";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [err,setErr]=useState("")
+  const [err, setErr] = useState("");
 
   const handleLogin = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
@@ -20,11 +20,10 @@ const Login = () => {
       });
       if (response.data.success) {
         console.log(response.data);
-        sessionStorage.setItem("name",response.data.name)
-        window.location.href="/"
-      }
-      else{
-        setErr(response.data.message)
+        sessionStorage.setItem("name", response.data.name);
+        window.location.href = "/";
+      } else {
+        setErr(response.data.message);
       }
     } catch (error) {
       console.error("Login failed:", error);
@@ -75,7 +74,9 @@ const Login = () => {
                             <input
                               type="email"
                               value={email}
-                              onChange={(e) => setEmail(e.target.value.toLowerCase())}
+                              onChange={(e) =>
+                                setEmail(e.target.value.toLowerCase())
+                              }
                               id="form3Example3c"
                               className="form-control"
                             />
@@ -111,24 +112,33 @@ const Login = () => {
                             Login
                           </button>
                         </div>
+                        <div>
+                          <Link to="/forgot" className="h6 ms-3 txt-color mb-4">
+                            Short Term Memory Loss(Forgot Password)
+                          </Link>
+                        </div>
                         <Link to="/signup" className="h6 ms-3 txt-color mb-4">
                           Create an account
                         </Link>
                       </form>
                     </div>
                     <div className="col-md-10 col-lg-6 col-xl-7 d-flex align-items-center order-1 order-lg-2">
-                      {err && <img
-                        src={Noentry}
-                        className="me-3 img-fluid"
-                        style={{ height: "500px" }}
-                        alt="Sample image"
-                      />}
-                      {!err && <img
-                        src={Img}
-                        className="me-3 img-fluid"
-                        style={{ height: "500px" }}
-                        alt="Sample image"
-                      />}
+                      {err && (
+                        <img
+                          src={Noentry}
+                          className="me-3 img-fluid"
+                          style={{ height: "500px" }}
+                          alt="Sample image"
+                        />
+                      )}
+                      {!err && (
+                        <img
+                          src={Img}
+                          className="me-3 img-fluid"
+                          style={{ height: "500px" }}
+                          alt="Sample image"
+                        />
+                      )}
                     </div>
                   </div>
                 </div>
