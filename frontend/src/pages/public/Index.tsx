@@ -4,12 +4,34 @@ import Header from "../includes/components/Header";
 import { FaFacebook, FaYoutube, FaInstagram } from "react-icons/fa";
 import Footer from "../includes/components/Footer";
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useHistory } from "react";
 
 const Index = () => {
   const [showsData, setShowsData] = useState([]);
   const [locationData, setLocationData] = useState([]);
   const [currentCity, setCurrentCity] = useState("");
+
+  const handleBookShow = async (showid) => {
+    try {
+      const user = sessionStorage.getItem("name");
+      if (user) {
+        const userid = sessionStorage.getItem("id");
+        const response = await axios.post("http://localhost:8000/shows/book/", {
+          show: showid,
+          fan: userid,
+          isPurchased: false,
+        });
+        if (response.data.success) {
+          setLocationData(response.data.data);
+        }
+      } else {
+        let history = useHistory();
+        history.push("/login");
+      }
+    } catch (error) {
+      console.error("Data fetching failed:", error);
+    }
+  };
 
   const fetchData = async () => {
     try {
@@ -184,14 +206,18 @@ const Index = () => {
                   <p className="card-text">{card.description}</p>
                 </div>
                 <div className="card-body">
-                  <button type="submit" className="btn-card">
+                  <button
+                    type="submit"
+                    className="btn-card"
+                    onClick={() => handleBookShow(card.id)}
+                  >
                     Book Show
                   </button>
                 </div>
               </div>
             );
           } else {
-            return null; // Render nothing if the show's city doesn't match currentCity
+            return null;
           }
         })}
       </div>

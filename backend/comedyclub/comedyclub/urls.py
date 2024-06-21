@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.urls import path
-from .views import add_fan, admin_generate_otp, add_contact,admin_delete, admin_update_password, comedian_update, contact_data, contact_delete, contact_reply, fan_data, fan_delete, fans_generate_otp, fans_update_password, location_delete, location_update, update_show, delete_show, faq_data, add_faq, about_data, update_about, login_fan, login_admin, admin_data, admin_add, count_data, create_show, shows_data, comedian_data, add_comedian, location_data, add_location
+from .views import add_fan, admin_generate_otp, add_contact,admin_delete, admin_update_password, book_data, book_show, comedian_delete, comedian_update, contact_data, contact_delete, contact_reply, fan_data, fan_delete, fans_generate_otp, fans_update_password, location_delete, location_update, update_show, delete_show, faq_data, add_faq, about_data, update_about, login_fan, login_admin, admin_data, admin_add, count_data, create_show, shows_data, comedian_data, add_comedian, location_data, add_location
 
 urlpatterns = [
     
@@ -26,10 +26,13 @@ urlpatterns = [
     path('shows/data/', shows_data, name='shows_data'),
     path('shows/delete/', delete_show, name='delete_show'),
     path('shows/update/', update_show, name='update_show'),
+    path('shows/book/', book_show, name='book_show'),
+    path('book/data/', book_data, name='book_data'),
     
     path('comedian/create/', add_comedian, name='add_comedian'),
     path('comedian/update/', comedian_update, name='comedian_update'),
     path('comedian/data/', comedian_data, name='comedian_data'),
+    path('comedian/delete/', comedian_delete, name='comedian_delete'),
     
     path('location/add/', add_location, name='add_location'),
     path('location/data/', location_data, name='location_data'),
@@ -45,5 +48,5 @@ urlpatterns = [
     path('contact/add/', add_contact, name='add_contact'),
     path('contact/data/', contact_data, name='add_contact'),
     path('contact/delete/', contact_delete, name='contact_delete'),
-    path('contact/reply/', contact_reply, name='contact_reply'),
+    path('contact/reply/', contact_reply, name='contact_reply'),   
 ]

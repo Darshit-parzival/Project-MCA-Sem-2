@@ -26,7 +26,7 @@ def login_fan(request):
         data = json.loads(request.body)
         name=db['fans'].find_one(data)
         if name:
-            return JsonResponse({'success': True, 'message':'Login Success', 'name':name['name']})
+            return JsonResponse({'success': True, 'message':'Login Success', 'name':name['name'], 'id':str(name['_id'])})
         else:
             return JsonResponse({'success': False, 'message':'Details are wrong!'})
             
@@ -351,6 +351,36 @@ def create_show(request):
         return JsonResponse({'success': False, 'error': 'Only POST requests are allowed'})
     
 @csrf_exempt
+def book_show(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        if db['bookedShow'].insert_one(data):
+            return JsonResponse({'success': True, 'message':'Book Show added successfully'})
+        else:
+            return JsonResponse({'success': False, 'message':'Book Show Not Added'})
+    else:
+        return JsonResponse({'success': False, 'error': 'Only POST requests are allowed'})
+    
+@csrf_exempt
+def book_data(request):
+    if request.method == 'POST':
+        data = list(db['bookedShow'].find()) 
+        if data:
+            serialized_data = []
+            for bookedShow in data:
+                bookedShow_data = {
+                    'id': str(bookedShow['_id']),
+                    'show': bookedShow['show'],
+                    'fan': bookedShow['fan'],
+                }
+                serialized_data.append(bookedShow_data)
+            return JsonResponse({'success': True, 'message': 'Data Retrieved', 'data': serialized_data})
+        else:
+            return JsonResponse({'success': False, 'message': 'Details are wrong!'})
+    else:
+        return JsonResponse({'success': False, 'error': 'Only POST requests are allowed'})
+    
+@csrf_exempt
 def shows_data(request):
     if request.method == 'POST':
         data = list(db['shows'].find()) 
@@ -479,6 +509,19 @@ def comedian_update(request):
 
     else:
         return JsonResponse({'success': False, 'message': 'Only POST requests are allowed'})
+    
+@csrf_exempt
+def comedian_delete(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        id=data.get('id')
+        try:
+            if db['comedians'].delete_one({'_id':ObjectId(id)}):
+                return JsonResponse({'success': True, 'message':'comedian deleted successfully'})
+            else:
+                return JsonResponse({'success': False, 'message':'comedian Not deleted'})
+        except:
+            return JsonResponse({'success': False, 'error': 'Only POST requests are allowed'})
     
 @csrf_exempt
 def location_data(request):

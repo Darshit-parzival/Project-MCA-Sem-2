@@ -9,9 +9,7 @@ const Comedians = () => {
 
   const fetchData = async () => {
     try {
-      const response = await axios.post(
-        "http://localhost:8000/comedian/data/"
-      );
+      const response = await axios.post("http://localhost:8000/comedian/data/");
       if (response.data.success) {
         setComedianData(response.data.data);
       }
@@ -21,7 +19,6 @@ const Comedians = () => {
   };
 
   useEffect(() => {
-
     fetchData();
   }, []);
 
@@ -70,9 +67,27 @@ const Comedians = () => {
   };
 
   const updateComedian = (comedian) => {
-    setId(comedian.id)
-    setName(comedian.name)
-    setDescription(comedian.description)    
+    setId(comedian.id);
+    setName(comedian.name);
+    setDescription(comedian.description);
+  };
+
+  const deleteComedian = async (id) => {
+    try {
+      const response = await axios.post(
+        "http://127.0.0.1:8000/comedian/delete/",
+        {
+          id,
+        }
+      );
+
+      if (response.data.success) {
+        fetchData();
+      }
+    } catch (error) {
+      console.error("Delete operation failed:", error);
+    }
+    
   };
 
   const handleSubmitUpadate = async (e: { preventDefault: () => void }) => {
@@ -97,7 +112,7 @@ const Comedians = () => {
       if (response.data.success) {
         setSucMessage(response.data.message);
         unsetHandle();
-        fetchData()
+        fetchData();
       } else {
         setMessage(response.data.message);
         unsetHandle();
@@ -163,7 +178,12 @@ const Comedians = () => {
                   </li>
                   <hr className="dropdown-divider bg-light" />
                   <li>
-                    <button className="dropdown-item">Delete Comedian</button>
+                    <button
+                      className="dropdown-item"
+                      onClick={() => deleteComedian(comedian.id)}
+                    >
+                      Delete Comedian
+                    </button>
                   </li>
                 </ul>
               </div>
@@ -268,8 +288,7 @@ const Comedians = () => {
         <div className="modal-dialog">
           <div className="modal-content bg-dark">
             <div className="modal-header">
-        
-            {!sucmessage && !message && (
+              {!sucmessage && !message && (
                 <h5 className="modal-title" id="exampleModalLabel">
                   Update Comedian
                 </h5>
@@ -287,7 +306,7 @@ const Comedians = () => {
                   {message}
                 </h5>
               )}
-          
+
               <button
                 type="button"
                 className="btn-close bg-light"

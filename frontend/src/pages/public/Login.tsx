@@ -21,6 +21,7 @@ const Login = () => {
       if (response.data.success) {
         console.log(response.data);
         sessionStorage.setItem("name", response.data.name);
+        sessionStorage.setItem("id", response.data.id);
         window.location.href = "/";
       } else {
         setErr(response.data.message);

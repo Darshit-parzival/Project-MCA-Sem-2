@@ -2,9 +2,10 @@ import Header from "../includes/components/Header";
 import "../includes/assets/css/Calender.css";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useHistory } from "react";
 import Footer from "../includes/components/Footer";
 import axios from "axios";
+import { Link } from "react-router-dom";
 
 const Calender = () => {
   const [allShowsData, setAllShowsData] = useState([]);
@@ -15,9 +16,24 @@ const Calender = () => {
   const [currentCity, setCurrentCity] = useState("");
   const [markedDates, setMarkedDates] = useState([]);
 
-  const handleBookShow = (show) => {
-    sessionStorage.setItem("bookedShow", JSON.stringify(show));
-    console.log("Show booked:", show);
+  const handleBookShow  = async (showid) => {
+    try {
+      const user = sessionStorage.getItem("name");
+      if (user) {
+        const userid = sessionStorage.getItem("id");
+        const response = await axios.post("http://localhost:8000/shows/book/", {
+          show: showid, fan: userid, isPurchased: false
+        });
+        if (response.data.success) {
+          setLocationData(response.data.data);
+        }
+      } else {
+        let history = useHistory();
+        history.push("/login");
+      }
+    } catch (error) {
+      console.error("Data fetching failed:", error);
+    }
   };
 
   const fetchLocationData = async () => {
@@ -161,13 +177,14 @@ const Calender = () => {
                     <div className="card-body">
                       <h5 className="card-title">{show.title}</h5>
                       <p className="card-text">{show.description}</p>
-                      <button
+                      <Link
                         type="submit"
                         className="btn-card"
-                        onClick={() => handleBookShow(show)}
+                        onClick={() => handleBookShow(show.id)}
+                        to="/book"
                       >
                         Book Show
-                      </button>
+                      </Link>
                     </div>
                   </div>
                 </div>
